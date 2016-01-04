@@ -38,7 +38,13 @@ Ce module s'adrese aux étudiants du S7 du parcours polytech biotechnologie, et 
 L'objectif général de ce module est d'apprendre à utiliser des outils bioinformatiques pour analyser des données massives produites par les technologies de séquençage massivement parallèle (*Next Generation sequencing*, *NGS*).
 
 
+### Modalités de contrôle des connaissances
 
+Examen sur table. 
+
+- Questions de théorie sur base des CM
+- Interprétation de résultats: nous fournissons une ou des figures/tables de résultats produites par un logiciel ou extraites de la littérature et vous demandons de les interpréter
+- Exercices: interprétation des statistiques sous-jacentes au traitement des données NGS (p-valeur, FDR). 
 
 * * * * * * * * *
 
@@ -68,9 +74,16 @@ Ce module est complémentaire au module optionnel de "Génomique"
 
 ### Cours
 
-#### Introduction aux technologies de Next Generation Sequencing
+
+Denis dresse un panorama global des technologies, des méthodes et des applications.
+
+Jacques revient ensuite sur les aspects bioinformatiques (comparaisons d'outils) et statistiques des principales étapes (read mapping, peak calling, analyse différentielle en transcriptomique).
+
+#### CM1 et 2: Introduction aux technologies de Next Generation Sequencing (Denis)
 
 - technologies de séquençage 
+
+- distinction entre single-end et paired-ends
 
 - accès aux données NGS dans les bases de données. GEO, sample, series, platform, ...
 
@@ -86,12 +99,23 @@ Ce module est complémentaire au module optionnel de "Génomique"
     - environnement Galaxy pour la gestion des workflows basiques
     - environnement R pour le traitement statistique personnalisé
 
-##### Read mapping
+- Paysage général des applications
+
+    - RNA-seq: traité au cours
+    - ChIP-seq : vu au cours
+    - Analyse de variants: pas traité cette année
+    - RNA-seq de novo: pas traité cette année
+    - autres applications: montrer la diversité des applications, et l'explosion des "machin-seq"
+
+
+- Qualité des reads / read mapping
+
+- Cas d'étude: on vient de séquencer des échantillons ChIP-seq, on veut évaluer la qualité des reads + les aligner sur le génome + évaluer la répartition chromosomique de ces reads.
 
 - Problématique générale du read mapping
+- Qualité des reads: montrer un exemple de rapport fastqc (ou bien plus tard ?)
 - Formats de fichiers de reads: fastq, bam 
 - Formats de fichiers pour lesprofils de couverture (bedgraph, wig, bigwig)
-- Qualité des reads 
 - Outils d'alignement (montrer quelques outils, un exemple de résultat, mentionner les paramètres à ajuster / surveiller)
 - Statistiques de read mapping
 
@@ -99,9 +123,12 @@ Ce module est complémentaire au module optionnel de "Génomique"
     - temps d'attente pour la Nième substitution (binomiale négative)
     - (?) probabilité d'une séquence en prenant en compte les fréquences de résidus
     
+    
+    
+#### CM3: Analyse statistique de données ChIP-seq (Jacques van Helden)
 
-#### Analyse de données ChIP-seq (facteurs transcriptionnels et marques chromatiniennes)
 
+- Read mapping pour le peak-calling
 - Problématique générale du peak calling 
 - Applications: facteurs transcriptionnels / marques chromatiniennes
 - Choix de l'input
@@ -114,20 +141,24 @@ Ce module est complémentaire au module optionnel de "Génomique"
 
 - Visualisation: montrer la répartition des reads de chip-seq le long du génome + l'input
 
+- répartition chromosomique des reads (CEAS)
+
 - Statistiques de peak-calling: Poisson (+ discussion sur l'estimation du lambda)
 
 
-#### Analyse transcriptomique par RNA-seq
+#### Détection de gènes différentiellement exprimés en RNA-seq (Jacques van Helden)
 
 - Rappel: structure d'un gène
 - Modalité de comptage des reads par gène / transcrit / opéron / exon / .... 
 - Statistiques d'expression différentielle
+- Corrections de tests multiples
+- Contrôles négatifs
 
 * *  * * * * * 
 
 ### Travaux pratiques
 
-#### Manipulation de données NGS avec Galaxy
+#### Manipulation de données NGS avec Galaxy (Denis Puthier)
 
 Le premier TD visera à se familiariser avec les données NGS, en aanlysant quelques jeux de données illustratifs. 
 
@@ -141,7 +172,7 @@ But du TP: implémenter un petit workflow sous Galaxy: faire tourner les outils 
 - peak calling 
 - visualisation des données sur le génome (IGV et/ou UCSC genome browser)
 
-#### Visualisation de données CHIP-seq
+#### Accès aux données, annotation et visualisation (Denis Puthier)
 
 - se connecter à GEO et récupérer des données
 - importer des résultats du read mapping (coverage) + peak calling d'ENCODE ou Blueprint (tissus) pour certains facteurs et marques
@@ -151,14 +182,12 @@ But du TP: implémenter un petit workflow sous Galaxy: faire tourner les outils 
 
 
 
-#### Analyse statistique de données NGS
+#### Analyse statistique de données NGS: 1. Read mapping (Jacques van Helden)
 
-Sous R
+#### Analyse statistique de données NGS: 2. peak-calling (Jacques van Helden)
 
-- RNA-seq: charger une table, faire tourner DESeq2 ou edgeR
-- dessiner des tas de graphiques
-
-- CHIP-seq si on s'ennuie
+#### Analyse statistique de données NGS: 3. détection de gènes différentiellement exprimés (Jacques van Helden)
 
 
-* * * * * * ** 
+* * * * * * * * 
+

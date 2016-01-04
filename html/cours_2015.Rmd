@@ -1,0 +1,164 @@
+---
+title: "JGB71E - Bioinformatique Appliquée - Contenu du cours 2015-2016"
+author: "Denis Puthier & Jacques van Helden"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  word_document: default
+---
+
+
+* * * * * ** *
+
+## Description du module
+
+**Volume** 8h CM + 10h TD
+**Enseignants:** Denis Puthier et Jacques van Helden
+
+
+### Prérequis
+
+Ce module s'adrese aux étudiants du S7 du parcours polytech biotechnologie, et il s'appuie sur les connaissances acquises durant les cours de bioinformatique de l'année précédente. 
+
+- Annotation des génomes (Gaël Erauso)
+- Programmation (Denis Puthier)
+
+### Objectifs pédagogiques
+
+L'objectif général de ce module est d'apprendre à utiliser des outils bioinformatiques pour analyser des données massives produites par les technologies de séquençage massivement parallèle (*Next Generation sequencing*, *NGS*).
+
+
+
+
+* * * * * * * * *
+
+## Ne pas confondre : module "génomique"
+
+Ce module est complémentaire au module optionnel de "Génomique"
+
+- Exploration de génomes (TP: Ensembl genome browser, UCSC genome browser)
+
+- Bilan d'annotation des génomes (en se basant sur les méthodes vues en 3A, annotation par similarité de séquences)
+
+- Structure des gènes (concepts: maîtriser les concepts d'intron, exon, UTR, épissage alternatif; TP: calculer des statistiques sur les répartitions des séquences génomiques en intron/exon/UTR, ... à partir de fichiers plats)
+
+- Génomique comparative: 
+
+    - types d'homologie (TP: Ensembl Compara)
+    - identification de régions génomoiques conservées entre génomes d'animaux pluricellulaires
+    
+    
+- Annotation fonctionnelle de groupes de gènes
+
+    - enrichissement GO
+    
+* * * * * * * * 
+    
+## Contenu du cours 2015
+
+### Cours
+
+#### Introduction aux technologies de Next Generation Sequencing
+
+- technologies de séquençage 
+
+- accès aux données NGS dans les bases de données. GEO, sample, series, platform, ...
+
+- quelques ordres de grandeurs (rapidité de séquençage, nombre de jeux de données disponibles ppour les métazoaires, plantes, Fungi, bactéries)
+
+- problèmes d'échelle pour le traitement des données
+
+- développmeent de nouvelles méthodes d'analyswe appropriées au caractère particulier des donénes (comptages, maths discrètes)
+
+- Survol des outils existants (donner l'idée générale plutôt qu'une énumération)
+
+    - nouveaux outils spécialisés et suites disponible sous Linux (samtools, bedtools, ...)
+    - environnement Galaxy pour la gestion des workflows basiques
+    - environnement R pour le traitement statistique personnalisé
+
+##### Read mapping
+
+- Problématique générale du read mapping
+- Formats de fichiers de reads: fastq, bam 
+- Formats de fichiers pour lesprofils de couverture (bedgraph, wig, bigwig)
+- Qualité des reads 
+- Outils d'alignement (montrer quelques outils, un exemple de résultat, mentionner les paramètres à ajuster / surveiller)
+- Statistiques de read mapping
+
+    - probabilité de match en fonction des substitutions (binomiale). modèle simplifié IID
+    - temps d'attente pour la Nième substitution (binomiale négative)
+    - (?) probabilité d'une séquence en prenant en compte les fréquences de résidus
+    
+
+#### Analyse de données ChIP-seq (facteurs transcriptionnels et marques chromatiniennes)
+
+- Problématique générale du peak calling 
+- Applications: facteurs transcriptionnels / marques chromatiniennes
+- Choix de l'input
+- Formats de fichier (bed + les dialectes)
+- Outils existants
+
+    - insister sur la différence entre narrow et broad peaks
+    - Impact du choix de l'outil sur les résultats (MACS vs SPSS vs Homer vs SICER)
+    - Impact du choix des paramètres sur les résultats
+
+- Visualisation: montrer la répartition des reads de chip-seq le long du génome + l'input
+
+- Statistiques de peak-calling: Poisson (+ discussion sur l'estimation du lambda)
+
+
+#### Analyse transcriptomique par RNA-seq
+
+- Rappel: structure d'un gène
+- Modalité de comptage des reads par gène / transcrit / opéron / exon / .... 
+- Statistiques d'expression différentielle
+
+* *  * * * * * 
+
+### Travaux pratiques
+
+#### Manipulation de données NGS avec Galaxy
+
+Le premier TD visera à se familiariser avec les données NGS, en aanlysant quelques jeux de données illustratifs. 
+
+Outils: Galaxy
+
+Jeux d'étude: analyse de données ChIP-seq
+
+But du TP: implémenter un petit workflow sous Galaxy: faire tourner les outils un à un puis construire son workflow
+
+- read mapping
+- peak calling 
+- visualisation des données sur le génome (IGV et/ou UCSC genome browser)
+
+#### Visualisation de données CHIP-seq
+
+- se connecter à GEO et récupérer des données
+- importer des résultats du read mapping (coverage) + peak calling d'ENCODE ou Blueprint (tissus) pour certains facteurs et marques
+- préparer des figures représentatives à échelle du génome, du chromosome ou d'un gène
+- détecter les gènes liés aux pics d'un TF d'intérêt dans deux tissus donnés et comparer
+- analyse d'enrichissement fonctionnel 
+
+
+
+#### Analyse statistique de données NGS
+
+Sous R
+
+- RNA-seq: charger une table, faire tourner DESeq2 ou edgeR
+- dessiner des tas de graphiques
+
+- CHIP-seq si on s'ennuie
+
+
+* * * * * * ** 

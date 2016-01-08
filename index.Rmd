@@ -1,0 +1,45 @@
+---
+title: "jgb71e — 4ème année Polytech Marseille - Bioinformatique appliquée."
+author: "Denis Puthier, Jacques van Helden"
+date: "2015-2016"
+output: 
+  html_document:
+    theme: cerulean
+
+
+---
+
+#### Enseignants
+
+ > - Jacques van Helden (JvH)
+ > - Denis Puthier (DP)
+
+
+#### Resources
+
+| Nom | Lien | Description
+-----|------|--------------
+|site web d'illumina | https://www.illumina.com/| De nombreuses vidéo de présentation des technologies.|
+|site web d'Oxford Nanopore|https://www.nanoporetech.com/| Présentation du MiION et des ses applications.|
+
+-------------------------------------------------------
+
+#### Cours théoriques
+
+Vous trouverez ci-dessous des  informations portant sur les concepts nécessaires à la réalisation des travaux dirigés.
+
+
+| Nom | Description 
+|-----|-----------
+|[Les approches hauts-débit en génomique](slides/genomic-intro.pdf)  | Les outils haut-débit et les challenges dans le domaine de la génomique.
+| [Une introduction au RNA-Seq](slides/rna-seq_2015-polytech.pdf)| Applications. Traitement des données RNA-Seq. 
+
+-------------------------------------------------------
+
+#### Travaux dirigés
+
+Vous trouverez ci-dessous la liste des exercices réalisés.
+
+| Nom |  Concept présentés
+|-------|----------
+

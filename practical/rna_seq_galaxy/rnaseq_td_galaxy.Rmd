@@ -277,26 +277,15 @@ options(warn=0)
 
 In order to provide topHat with the location of known exons in the human genome, we will download a file in GTF format (Gene transfer format). You can get more information about this format on [UCSC web site](https://genome.ucsc.edu/FAQ/FAQformat.html#format4) or [GENCODE](http://www.gencodegenes.org/gencodeformat.html) web site.
 
-GTF file can be obtained both from **UCSC** genome browser or **ensembl** [ftp web site](http://www.ensembl.org/info/data/ftp/index.html). Here we will download the gtf file  from UCSC using Galaxy **UCSC Main table browser**. We will ask for ensembl annotations as numerous tables of both databases (i.e UCSC and ensembl) are synchronized.
+GTF file can be obtained both from **UCSC** [table browser](https://genome.ucsc.edu/cgi-bin/hgTables) or **ensembl** [ftp web site](http://www.ensembl.org/info/data/ftp/index.html). 
 
-In Galaxy select **Get Data > UCSC Main table browser**. The page that open correspond to the **Table Browser** from UCSC. Fill the form as follow:
+Here we will download a GTF file containing information related transcript from chromosome human chromosome 10. This GTF file was obtained from **ensembl archive** [web site](http://www.ensembl.org/info/website/archives/index.html) (release 67 corresponding to GRCh37/hg19). 
 
 <div class="protocol">
 
-- Clade: Mammal.
-- Genome: Human
-- Assembly: hg19
-- Group: Genes and Gene prediction.
-- track: Ensembl Gene.
-- Table: ensGene.
-- In **Region** set **position** to **chr10**. 
-- Select **GTF - gene transfert format** for output. Use the following string "hg19_ensembl.gtf" as **output file name**.
-- Click on get output
-- Click on **Send query to Galaxy**. 
-- Rename the file to ensGene
-- Check that the file format is in agreement with what is expected. 
-- From this file select only genes located on chromosome 10 using **Filter and Sort > Filter data on any column**. 
-- Rename the record to "hg19_ensembl_chr10.gtf".
+- Select **Tools > Get Data > Upload File**. In the text area (**URL/Text**) paste the link to the GTF file ([here](http://pedagogix-tagc.univ-mrs.fr/courses/data/ngs/jgb71e-polytech-bioinfo-app/Homo_sapiens.GRCh37.67_chr10.gtf.gz))
+- Select **GTF** as **File Format** and hg19 (GRCh37) as a reference genome. Press Execute.
+- On the right column, click on the pencil (**edit attributes**) and change the name to hg19_ensembl_gtf.
 
 </div>
 
@@ -543,7 +532,6 @@ The objective of quantification is to estimate the expression level of each gene
 - Set **featureCounts parameters** to **extended format**.
 - Set **GFF feature type filter** to exon (we want to count inside exonic regions).
 - Set **GFF gene identifier** to **gene_id** (all exons of all transcripts of a given gene will be summed up to get the final expression value).
-- Select **Allow read to contribute to multiple features**.
 - Set **Strand specific protocol** to fr-unstranded.
 - Press **Execute**.
 - Check the **Summary file**. What are **Unassigned_MultiMapping**, **Unassigned_NoFeatures**, **Unassigned_MappingQuality**, **Unassigned_Chimera** ?

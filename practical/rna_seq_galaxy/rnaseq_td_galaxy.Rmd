@@ -538,9 +538,38 @@ The objective of quantification is to estimate the expression level of each gene
 
 - Download the gene expression table produced by featureCount.
 - Rename the file to **raw_counts.txt**.
-- To be continued... 
+- Open **RStudio**.
 
+```{r}
+## First we read gene counts
+count <- read.table("raw_counts.txt" ,sep="\t", head=T,row=1)
+#head(count)
+#head(rownames(count))
+#colnames(count)
+
+# Change column names
+colnames(count) <- c("Activated", "Resting")
+## Values are log2 transformed 
+## (a pseudo-count is added in case one of the sample is equal or close to zero)
+count <- log2(count +1)
+
+## Checking distribution of FPKM values
+hist(as.matrix(count), main="Distribution of count values")
+boxplot(count, col=c("red","gray"), pch=16, main="Boxplot for count valaues")
+
+
+## Scatter plot comparing expression levels in sample 1 and 2
+par(xaxs='i',yaxs='i')
+plot(count, pch=20, panel.first=grid(col="darkgray"))
+identify(count[,1], count[,2],lab=rownames(count))
+
+```
 </div>
+
+
+## What's about ENSG00000134460 ?
+
+The gene ENSG00000134460 seems to be strongly induced during T-cell activation. Go to Ensembl genome Browser and use the search area to get some information about it. Is this positive regulation expected ?
 
 
 

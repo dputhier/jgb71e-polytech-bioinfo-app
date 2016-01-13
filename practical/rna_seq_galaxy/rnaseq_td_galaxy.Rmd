@@ -264,20 +264,15 @@ The sequence of the chr19 can be downloaded through the [UCSC web site](http://h
 
 -----------------------------------------------------------------
 
-### Downloading transcript annotation (ensembl) in gtf format from UCSC table browser
-
-```{r, echo=FALSE}
-remdr$navigate("https://genome.ucsc.edu/cgi-bin/hgTables")
-remdr$screenshot(file = "img/tablebrowser.png")
-img <- readPNG("img/tablebrowser.png")
-options(warn=0)
-```
+### Downloading transcript annotation (ensembl) in gtf format
 
 <img src="img/tablebrowser.png" width="100">
 
 In order to provide topHat with the location of known exons in the human genome, we will download a file in GTF format (Gene transfer format). You can get more information about this format on [UCSC web site](https://genome.ucsc.edu/FAQ/FAQformat.html#format4) or [GENCODE](http://www.gencodegenes.org/gencodeformat.html) web site.
 
 GTF file can be obtained both from **UCSC** [table browser](https://genome.ucsc.edu/cgi-bin/hgTables) or **ensembl** [ftp web site](http://www.ensembl.org/info/data/ftp/index.html). 
+
+**NB**: it is very important at this step to ensure that the fasta file and the GTF file are obtained from the genome release (here human genome version 19). The chromosome sequences and gene positions vary between genome releases.
 
 Here we will download a GTF file containing information related transcript from chromosome human chromosome 10. This GTF file was obtained from **ensembl archive** [web site](http://www.ensembl.org/info/website/archives/index.html) (release 67 corresponding to GRCh37/hg19). 
 
@@ -289,7 +284,6 @@ Here we will download a GTF file containing information related transcript from 
 
 </div>
 
-**NB**: it is very important at this step to ensure that the fasta file and the GTF file are obtained from the genome release (here human genome version 19). The chromosome sequences and gene positions vary between genome releases.
 
 
 

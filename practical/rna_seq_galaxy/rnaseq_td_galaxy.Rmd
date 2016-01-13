@@ -416,6 +416,8 @@ Go to the ensembl [genome browser](http://www.ensembl.org/).
 
 Get some information about BAG3:
 
+<div class="exo">
+
 - In the **search panel** select **Human**. In the text area of the search panel type **BAG3**.
 - Click on entry **ENSG00000151929**. What is the meaning of the **ENSG** prefix ?
 - What is the **description** associated to BAG3 ? What does **athanogene** mean ?
@@ -426,18 +428,26 @@ Get some information about BAG3:
 - What are the known **phenotypes** associated with defect in this gene ?
 - How many **orthologues** and **paralogues** are linked to human BAG3 ?
 
+</div>
+
 Get some information about : ENST00000454541
+
+<div class="exo">
 
 - What is the **gene identifier** of ENST00000454541 ?
 - What is the length of its cDNA ?
 - What is its associated **biotype** ?
 - Go to [this web page](http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html) to get the definition associated with **Gene type**. What is a **Processed pseudogene** ?
 
+</div>
+
 ------------------------------------------------------------------------
 
 ### Searching for novel transcript with cufflinks
 
 We can now use the cufflinks software to try to discover new transcripts inside the dataset. We will also provide cufflinks with the set of known transcript.
+
+<div class="protocol">
 
 - In the toolbox, select **NGS: RNA Analysis > Cufflinks**.
 - Select the bam file in the **SAM or BAM file of aligned RNA-Seq reads** menu.
@@ -446,15 +456,21 @@ We can now use the cufflinks software to try to discover new transcripts inside 
 - Set **Library prep used for input read** to **fr-unstranded**.
 - Press **execute**.
 
+</div>
+
 ------------------------------------------------------------------------
 
 ### Extracting a workflow
 
 Galaxy allows user to apply the developed pipeline to another set of sample. In order to do that, the user must create a **workflow**.
 
+<div class="protocol">
+
 - In the history menu, select **history options**.
 - Click on **Extract workflow**.
 - Set the name of the new workflow to **RNA-Seq part 1**.
+
+</div>
 
 ------------------------------------------------------------------------
 
@@ -462,12 +478,16 @@ Galaxy allows user to apply the developed pipeline to another set of sample. In 
 
 We will now apply this workflow to the sample corresponding to **activated T-cell**.
 
+<div class="protocol">
+
 - Create a new history: **History > Create new**.
 - Rename this workspace : **Activated T-cells**.
 - Load the to fastq files corresponding to activated T-cells in this workspace using **get data**.
 - Use **History > Copy datasets** to copy **hg19_ensembl_chr10** and **chr10.fa** datasets into **Activated T-cells** history.
 - In the top menu select **workflow > RNA-Seq part 1 > edit**. Have a look at your new workflow. Check the input files.  
 - Select **workflow > RNA-Seq part 1 > run**. Set the to fastq file **SRR027888.SRR027890_chr10_1.fastq** as input 1, the second fastq file as input 2, the fasta file as input 3 and the gtf as input 4. Press **Run workflow** at the bottom of the page.
+
+</div>
 
 ------------------------------------------------------------------------
 
@@ -493,6 +513,8 @@ Here we will concentrate on retrieving the position of novel transcripts.
 Create a new history named **assemby and quantification**.
 
 
+<div class="protocol">
+
 - Use **History > Copy datasets** to copy **assembled transcript** file contained in the **Activated T-cells** and **Control T-cells** history into this novel history.
 - Copy the **hg19_ensembl_chr10** into this novel history.
 - Use **History > Copy dataset** to copy **assembled transcript** files contained in the **Activated T-cells** and **Control T-cells** history into this novel history.
@@ -503,9 +525,15 @@ Create a new history named **assemby and quantification**.
 - Merge this unknown transcript with the reference annotation (**hg19_ensembl_chr10**) using **Text Manipulation > Concatenate datasets**. 
 - Rename the file to **Assembly.gtf**.
 
+</div>
+
+----------------------------------------------------
+
 ## Quantification
 
 The objective of quantification is to estimate the expression level of each gene by counting the number of reads overlapping each gene model. Several software have been developed for this task (cuffdiff, featureCount, HTSeq-count,...). The FeatureCounts software is a light-weight read counting program written entirely in the C programming language.  It has a variety of advanced parameters but its major strength is its outstanding performance (10GB SE BAM file takes about 7 minutes on a single average CPU).
+
+<div class="protocol">
 
 - Copy the two bam files in the **assemby and quantification** history.
 - Select **NGS: RNA Analysis > featureCounts**.
@@ -520,14 +548,18 @@ The objective of quantification is to estimate the expression level of each gene
 - Press **Execute**.
 - Check the **Summary file**. What are **Unassigned_MultiMapping**, **Unassigned_NoFeatures**, **Unassigned_MappingQuality**, **Unassigned_Chimera** ?
 
+</div>
+----------------------------------------------------
 
 ## Descritive statistics with R
 
+<div class="protocol">
 
 - Download the gene expression table produced by featureCount.
 - Rename the file to **raw_counts.txt**.
 - To be continued... 
 
+</div>
 
 
 

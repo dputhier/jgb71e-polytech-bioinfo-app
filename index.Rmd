@@ -41,7 +41,7 @@ Vous trouverez ci-dessous des  informations portant sur les concepts nécessaire
 
 Vous trouverez ci-dessous la liste des exercices réalisés.
 
-| Nom |  Concepts traités |
-|-----|-------------------|
-| | |
+| Nom |  Concepts traités  | Outils |
+|-----|-------------------|--------|
+| [Tutoriel RNA-Seq](practical/rna_seq_galaxy/rnaseq_td_galaxy.html) | Traitement de données RNA-Seq | Galaxy server, TopHat, FastQC, cufflinks, cuffmerge, IGV, samtool flagstat, UCSC genome Browser, UCSC table Browser, UCSC FTP web site, Ensembl gene search, R...
 

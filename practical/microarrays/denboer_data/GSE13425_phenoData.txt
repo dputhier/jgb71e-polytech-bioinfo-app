@@ -1,0 +1,191 @@
+Sample_geo_accession	Sample_title	Sample_source_name_ch1	Sample_characteristics_ch1	Sample_description
+GSM338666.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338667.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338668.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338669.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338670.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338671.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338672.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338673.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338674.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338675.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338676.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338677.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338678.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338679.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338680.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338681.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338682.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338683.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338684.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338685.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338686.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338687.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338688.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338689.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338690.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338691.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338692.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338693.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338694.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338695.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338696.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338697.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338698.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338699.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338700.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338701.CEL	T-ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	T-ALL	Sample collected at diagnosis.
+GSM338702.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338703.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338704.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338705.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338706.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338707.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338708.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338709.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338710.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338711.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338712.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338713.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338714.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338715.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338716.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338717.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338718.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338719.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338720.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338721.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338722.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338723.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338724.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338725.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338726.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338727.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338728.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338729.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338730.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338731.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338732.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338733.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338734.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338735.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338736.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338737.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338738.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338739.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338740.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338741.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338742.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338743.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338744.CEL	TEL-AML1	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1	Sample collected at diagnosis.
+GSM338745.CEL	TEL-AML1 + hyperdiploidy	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: TEL-AML1 (+hyperdiploidy)	Sample collected at diagnosis.
+GSM338746.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338747.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338748.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338749.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338750.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338751.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338752.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338753.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338754.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338755.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338756.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338757.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338758.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338759.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338760.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338761.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338762.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338763.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338764.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338765.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338766.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338767.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338768.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338769.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338770.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338771.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338772.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338773.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338774.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338775.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338776.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338777.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338778.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338779.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338780.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338781.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338782.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338783.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338784.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338785.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338786.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338787.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338788.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338789.CEL	hyperdiploid	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B  ALL, subtype: Hyperdiploid	Sample collected at diagnosis.
+GSM338790.CEL	E2A-rearranged (E)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (E)	Sample collected at diagnosis.
+GSM338791.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338792.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338793.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338794.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338795.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338796.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338797.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338798.CEL	E2A-rearranged (EP)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (EP)	Sample collected at diagnosis.
+GSM338799.CEL	E2A-rearranged (E-sub)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (E-sub)	Sample collected at diagnosis.
+GSM338800.CEL	E2A-rearranged (E-sub)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (E-sub)	Sample collected at diagnosis.
+GSM338801.CEL	E2A-rearranged (E-sub)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (E-sub)	Sample collected at diagnosis.
+GSM338802.CEL	E2A-rearranged (E-sub)	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: E2A-rearranged (E-sub)	Sample collected at diagnosis.
+GSM338803.CEL	BCR-ABL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: BCR-ABL	Sample collected at diagnosis.
+GSM338804.CEL	BCR-ABL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: BCR-ABL	Sample collected at diagnosis.
+GSM338805.CEL	BCR-ABL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: BCR-ABL	Sample collected at diagnosis.
+GSM338806.CEL	BCR-ABL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: BCR-ABL	Sample collected at diagnosis.
+GSM338807.CEL	BCR-ABL + hyperdiploidy	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: BCR-ABL (+hyperdiploidy)	Sample collected at diagnosis.
+GSM338808.CEL	MLL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: MLL	Sample collected at diagnosis.
+GSM338809.CEL	MLL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: MLL	Sample collected at diagnosis.
+GSM338810.CEL	MLL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: MLL	Sample collected at diagnosis.
+GSM338811.CEL	MLL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: MLL	Sample collected at diagnosis.
+GSM338812.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338813.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338814.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338815.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338816.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338817.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338818.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338819.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338820.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338821.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338822.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338823.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338824.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338825.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338826.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338827.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338828.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338829.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338830.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338831.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338832.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338833.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338834.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338835.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338836.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338837.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338838.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338839.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338840.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338841.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338842.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338843.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338844.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338845.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338846.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338847.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338848.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338849.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338850.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338851.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338852.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338853.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338854.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.
+GSM338855.CEL	pre-B ALL	bone marrow or peripheral blood sample from child with acute lymphoblastic leukemia	Precursor-B ALL, subtype: other	Sample collected at diagnosis.

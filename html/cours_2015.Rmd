@@ -122,10 +122,38 @@ Jacques revient ensuite sur les aspects bioinformatiques (comparaisons d'outils)
     - probabilité de match en fonction des substitutions (binomiale). modèle simplifié IID
     - temps d'attente pour la Nième substitution (binomiale négative)
     - (?) probabilité d'une séquence en prenant en compte les fréquences de résidus
+   
+#### CM3: Annotation des génomes
+
+##### Prérequis / rappels
+
+Les concepts suivants sont censés être maîtrisés par les étudiants qui suivront ce cours. Ils ont été abordés dans d'autres modules de la formaiton (bioinformatique, biochimie, biologie moléculaire).
+
+- Structure d'un gène codant (ORFs, introns, exons, UTR, régions avoisinantes)
+- Régulation transcriptionnelle
+- Voies métaboliques et leur régulation (transcription, activité enzymatique, transport)
+- Evénements évolutifs: spéciation, duplications, mutations
+- Alignements de séquences (par paires, multiples)
+- Recherche de séquences par similarité
+- Concepts d'homologie, analogie, orthologie, paralogie
+- Inférence phylogénétique
+
+##### La diversité génomique
+
+- Quelques ordres de grandeur concernant la diversité des génomes. Tailles des génomes, nombre de gènes, proportions codant / non-codant, ...
+- Nombre de génomes disponibles par groupe taxonomique
+- Annotations 
+
+- génomes microbiens: quelques jalons
+- l'annotation des gènes par similarité de séquence
+- méthodes de génomique comparative pour l'annotation des gènes (profils phylogénétiques, fusions/fissions, synténie)
+- opérons
+- détection de gènes différentiellement exprimés (biopuces et RNA-seq)
+- annotation des voies métaboliques
+- réseaux d'interactions fonctionnelles
+- enrichissement fonctionnel (Gene Ontology)
     
-    
-    
-#### CM3: Analyse statistique de données ChIP-seq (Jacques van Helden)
+<!--#### CM3: Analyse statistique de données ChIP-seq (Jacques van Helden)
 
 
 - Read mapping pour le peak-calling
@@ -144,9 +172,19 @@ Jacques revient ensuite sur les aspects bioinformatiques (comparaisons d'outils)
 - répartition chromosomique des reads (CEAS)
 
 - Statistiques de peak-calling: Poisson (+ discussion sur l'estimation du lambda)
+-->
 
+#### Analyse statistique des données de biopuce (Jacques van Helden)
 
-#### Détection de gènes différentiellement exprimés en RNA-seq (Jacques van Helden)
+##### Biopuces
+
+- Détection de gènes différentiellement exprimés
+- Corrections pour les tests multiples
+- Contrôles négatifs
+- Clustering
+- Classification supervisée
+
+##### RNA-seq
 
 - Rappel: structure d'un gène
 - Modalité de comptage des reads par gène / transcrit / opéron / exon / .... 
@@ -181,12 +219,20 @@ But du TP: implémenter un petit workflow sous Galaxy: faire tourner les outils 
 - analyse d'enrichissement fonctionnel 
 
 
+#### Analyse statistique de données NGS (Jacques van Helden)
 
-#### Analyse statistique de données NGS: 1. Read mapping (Jacques van Helden)
+1. Read mapping
+2. Détection de gènes différentiellement exprimés
+3. Clustering
+4. Enrichissement fonctonnel
 
-#### Analyse statistique de données NGS: 2. peak-calling (Jacques van Helden)
+#### Annotations génomiques (Jacques van Helden)
 
-#### Analyse statistique de données NGS: 3. détection de gènes différentiellement exprimés (Jacques van Helden)
+1. Réseaux d'interactions entre gènes (STRING)
+2. Bases de données métaboliques (MetaCyc, KEGG)
+3. Inférence d'opérons dans les génomes bactériens
+4. Projection de groupes de gènes d'intérêt sur des voies métaboliques
+
 
 
 * * * * * * * * 

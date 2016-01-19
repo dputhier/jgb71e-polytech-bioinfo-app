@@ -5,17 +5,21 @@ date: "2015-2016"
 output: 
   html_document:
     theme: cerulean
-
-
+    toc: true
+    toc_depth: 4
 ---
 
-#### Enseignants
-
- > - Jacques van Helden (JvH)
- > - Denis Puthier (DP)
+* * *  * * * * * *
 
 
-#### Ressources
+## Enseignants
+
+- Jacques van Helden (JvH)
+- Denis Puthier (DP)
+
+* * *  * * * * * *
+
+## Ressources
 
 | Nom | Lien | Description
 -----|------|--------------
@@ -24,7 +28,7 @@ output:
 
 -------------------------------------------------------
 
-#### Cours théoriques
+## Cours théoriques
 
 Vous trouverez ci-dessous des  informations portant sur les concepts nécessaires à la réalisation des travaux dirigés.
 
@@ -38,7 +42,7 @@ Vous trouverez ci-dessous des  informations portant sur les concepts nécessaire
 
 -------------------------------------------------------
 
-#### Travaux dirigés
+## Travaux dirigés
 
 Vous trouverez ci-dessous la liste des exercices réalisés.
 
@@ -48,16 +52,19 @@ Vous trouverez ci-dessous la liste des exercices réalisés.
 | [R quick tour](practical/R_first_steps/quick_tour.html) | Opérations de base avec R (réalisée sous forme de démo durant les TP) | R, RStudio |
 | [Transcriptome microarrays](practical/microarrays/denboer_data/) | Analyse des données de biopuces; détection de gènes exprimés de façon différentielles (DEG) entre sous-types de cancers.  | R, RStudio |
 
-## Fichiers de données
+* * *  * * * * * *
 
-### Den Boer 2009
+### Fichiers de données
+
+#### Den Boer 2009
 
 | Contenu | Fichier |
 |---------|---------|
 | Table d'expression | [denboer2009_GSE13425_Norm_Whole.tab.gz](practical/microarrays/denboer_data/denboer2009_GSE13425_Norm_Whole.tab.gz) |
 | Sous-types d'échantillons | [denboer2009_GSE13425_sample_subtype.tab](practical/microarrays/denboer_data/denboer2009_GSE13425_sample_subtype.tab) |
 | Description des échantillons | [GSE13425_phenoData.txt](practical/microarrays/denboer_data/GSE13425_phenoData.txt) |
+| | | 
 
-
+* * *  * * * * * *
 
 

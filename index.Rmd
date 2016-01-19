@@ -55,6 +55,8 @@ Vous trouverez ci-dessous la liste des exercices réalisés.
 | Contenu | Fichier |
 |---------|---------|
 | Table d'expression | [denboer2009_GSE13425_Norm_Whole.tab.gz](practical/microarrays/denboer_data/denboer2009_GSE13425_Norm_Whole.tab.gz) |
+| Sous-types d'échantillons | [denboer2009_GSE13425_sample_subtype.tab](practical/microarrays/denboer_data/denboer2009_GSE13425_sample_subtype.tab) |
+| Description des échantillons | [GSE13425_phenoData.txt](practical/microarrays/denboer_data/GSE13425_phenoData.txt) |
 
 
 

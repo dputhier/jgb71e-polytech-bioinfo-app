@@ -1,0 +1,115 @@
+---
+title: "Programme du cours 2017"
+author: "Nicolas Terrapon et Jacques van Helden"
+date: "1/4/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Cours théoriques
+
+| Date | Enseignant | Sujet |
+|------|-----------|-----------------------------------------|
+| 4/1 | JvH | Généralités sur le NGS<br>Probabilités de read mapping (début) |
+| 6/1 | JvH | Probabilités de read mapping (fin)<br>Analyse différentielle de RNA-seq |
+
+
+## Analyse statistique de RNA-seq
+
+- Principe de l'obtention des comptages de reads/gène.
+- Distribution des comptages par échantillons.
+- MA plot.
+- Normalisation des comptages.
+- Estimations de la variance par gène (schrinkage).
+- Principe de l'anlayse différentielle (négative binomiale).
+- Interprétation de la p-valeur.
+- Corrections de tests multiples.
+- Intégration de la taille d'effet (log2-FC) et de la significativité (P-valeur corrigé) au moyen de volcano plots.
+
+- Visualisation des résultats
+
+    - reads
+    - annotations génomiques
+    - profils de densité (coverage, bigwig, bedgraph)
+
+# Ressources
+
+Serveur Galaxy sur pedagogix: <http://pedagogix-tagc.univ-mrs.fr/galaxy/>
+
+# Concepts
+
+
+## Probabilités
+
+- Normalisation des données RNA-seq
+
+    - tailles des librairies
+    - piège de la somme et de la moyenne (effet des valeurs aberrantes)
+    - MA plots et TMM ([Robinson & Oshlack, 2010](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25>))
+    - estimateurs robustes: quantiles
+
+- Distributions discrètes les plus utilisées en NGS: géométrique, binomiale, négative binomiale, hypergéométrique
+
+- P-valeur et applications aux données à haut débit
+
+    - Histogramme des P-valeurs
+    - Volcano plots
+    - Corrections de tests multiples
+
+    
+- Clustering
+- PCA
+
+# TP
+
+## Galaxy
+
+
+[Tutoriel: analyse de données RNA-seq sous Galaxy](/practical/rna_seq_galaxy/rnaseq_td_galaxy.html)
+
+
+- téléchargement de données à partir de GEO ou ArrayExpress
+- workflow complet pour l'analyse différentielle de données RNA-seq
+
+    - contrôle de la qualité des reads (fastQC)
+    - trimming
+    - read mapping (TopHat)
+    - comptage de reads/gène
+    - density profile (bigwig)
+    - analyse différentielle avec edgeR + DESeq2
+    
+
+
+## Sous R
+
+- Charger une table de comptages RNA-seq (reads/gènes)
+- Calculer des stats descriptives par gène et par échantillon (mean, median, ..., summary). 
+- Scatter plot 1 échantillon vs un autre
+
+    - noter la présence d'outliers 
+    
+- histogramme des comptages par gène
+
+    - données brutes (on ne voit rien)
+    - log2(counts) -- après aoir ajouté un epsilon pour éviter les log2(0)
+
+- Boîte à moustaches par échantillon
+
+    - avant normalisation
+    - après normalisation par libsum
+    - après normalisation sur base du 3ème quartile
+
+- Détection de gènes différentiellement exprimés avec DESeq2, avec edgeR, et comparer les listes (diagramme de Venn)
+
+
+## Visualisation
+
+
+- Sous IGV
+- Sur UCSC genome browser ?
+- Ensembl Genome Browser
+
+

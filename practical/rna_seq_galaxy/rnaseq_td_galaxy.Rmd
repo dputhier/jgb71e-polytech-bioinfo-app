@@ -555,7 +555,7 @@ count <- log2(count +1)
 
 ## Checking distribution of FPKM values
 hist(as.matrix(count), main="Distribution of count values")
-boxplot(count, col=c("red","gray"), pch=16, main="Boxplot for count valaues")
+boxplot(count, col=c("red","gray"), pch=16, main="Boxplot for count values")
 
 
 ## Scatter plot comparing expression levels in sample 1 and 2

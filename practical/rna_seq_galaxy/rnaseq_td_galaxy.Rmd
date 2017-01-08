@@ -1,7 +1,7 @@
 ---
 title: "RNA-Seq analysis: practical session using Tuxedo suite"
-author: "Denis Puthier"
-date: "11 janvier 2016"
+author: "Denis Puthier, revised by Jacques van Helden"
+date: "First version: 11 janvier 2016; last update: `r Sys.Date()`"
 output:
   html_document:
     fig_caption: yes
@@ -15,8 +15,24 @@ output:
     toc: no
     toc_depth: 3
   word_document: default
+bibliography: rnaseq_td_galaxy.bib
 ---
 
+```{r include=FALSE, echo=FALSE, eval=TRUE}
+options(width=300)
+knitr::opts_chunk$set(echo = TRUE, eval=TRUE, fig.width = 7, fig.height = 5, fig.align = "center", size = "tiny", warning = FALSE, results = TRUE, message = FALSE, comment = "")
+```
+
+```{r required_packages, eval=TRUE, echo=FALSE}
+required.packages <- c("RSelenium", "png", "grid")
+for (pack in required.packages) {
+  if (!require(pack, character.only = TRUE)) {
+    install.packages(pack, quiet = TRUE)
+  }
+  library(pack, character.only = TRUE)
+}
+
+```
 
 
 
@@ -52,23 +68,23 @@ hr {
 You thus need to install RSelenium, png and grid R libraries. -->
 
 
-### Introduction
+# Introduction
 
-The "Tuxedo Suite" has been developed for RNA-Seq data analysis. It is mainly composed of Bowtie, Tophat, Cufflinks, CuffDiff. It is intended to provide powerful solutions for read mapping, discovery of novel gene structures and differential expression analysis. In the practical session we will use this suite to analyse two samples obtained from study "SRP000698". This study is available in the SRA database
+The **Tuxedo Suite** [@Trapnell:2012kp] has been developed for RNA-Seq data analysis. It is mainly composed of Bowtie, Tophat, Cufflinks, CuffDiff. It is intended to provide powerful solutions for read mapping, discovery of novel gene structures and differential expression analysis. In the practical session we will use this suite to analyse two samples obtained from study "SRP000698". This study is available in the [**Sequence Read Archive**](https://www.ncbi.nlm.nih.gov/sra) ([**SRA**](https://www.ncbi.nlm.nih.gov/sra)) database (<https://www.ncbi.nlm.nih.gov/sra>). 
 
--------------------------------------------------------------------
+********************************************************************************
+## The SRP000698 dataset
 
-### The SRP000698 dataset
+In the article entitled "*Genome-wide analysis of allelic expression imbalance in human primary cells by high-throughput transcriptome resequencing*" [@Heap:2010it] the authors used the RNA-Seq technology to compare the transcriptome of **activated and resting T-cells**. Using this technology they were also able to monitor allele-specific expression (**ASE**), that is, specific expression arising from maternally and paternally derived alleles. 
 
-In the article entitled "**Genome-wide analysis of allelic expression imbalance in human primary cells by high-throughput transcriptome resequencing**" the authors have used RNA-Seq technology to compare the transcriptome of **actived and resting T-cells**. Using this technology they were also able to monitor allele-specific expression (ASE), that is, specific expression arising from maternally and paternally derived alleles. In this tutorial we will concentrate on mapping read to the genome and compute gene expression levels with the Tuxedo suite.
-
-
--------------------------------------------------------------------
-
-### The Sequence Read Archive database
+In this tutorial we will concentrate on mapping read to the genome and compute gene expression levels with the Tuxedo suite.
 
 
-```{r,echo=FALSE}
+****************************************************************
+## The Sequence Read Archive database
+
+
+```{r,echo=FALSE, eval=FALSE}
 options(warn=-1)
 suppressWarnings(suppressMessages(require(RSelenium, quietly=TRUE, warn.conflicts = FALSE)))
 suppressWarnings(suppressMessages(require(png, quietly=TRUE)))
@@ -83,7 +99,8 @@ img <- readPNG("img/SRA_dataset.png")
 options(warn=0)
 ```
 
-<img src="img/SRA_dataset.png" width="100">
+<center><img src="img/SRA_dataset.png" width="80%" border=1></center>
+[Source: SRA Trace Archive](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?)
 
 Gene Expression Omnibus ([GEO](http://www.ncbi.nlm.nih.gov/geo/)) and Sequence Read Archive ([SRA](http://trace.ncbi.nlm.nih.gov/Traces/sra/)) are public databases that provide tools to submit, access and mine functional genomics data. Data may be related to array- or sequence-based technologies. For HTS data, GEO provides both processed data (such as *.bed and *.wig files) and links to raw data. Raw data are available from the Sequence Read Archive (SRA) database (including 454, IonTorrent, Illumina, SOLiD, Helicos and Complete Genomics). Both web sites propose search engines to query their databases.
 
@@ -114,35 +131,36 @@ Here we will access the raw dataset through the SRA database
 </div>
 
 
--------------------------------------------------------------------
+********************************************************************************
+# Galaxy tutorial
 
+## About Galaxy servers
 
-### About Galaxy servers
+The Galaxy server motto is "Data intensive biology for everyone". Galaxy is a web-based framework for data intensive biomedical research. Galaxy can be easily installed on any computer but is also proposed for remote access by numerous research groups and sequencing platforms. It is intended to ease the development of complex workflows to analyze various types of biological data. Although it has been historically oriented toward NGS data analysis (ChIP-Seq, RNA-Seq, Ribosome profiling,...), lots of public servers are also proposing set of tools dedicated to genomics, proteomics, image analysis, cancer stem cell analysis (...). 
 
-The Galaxy server motto is "Data intensive biology for everyone". Galaxy is a web-based framework for data intensive biomedical research. Galaxy can be install easily on any computer but is also proposed through remote access by numerous research groups. It is intended to ease the development of complexe workflows to analyze various types of biological data. Although it has been historically oriented toward NGS data analysis (ChIP-Seq, RNA-Seq, Ribosome profiling,...), lots of public servers are also proposing set of tools dedicated to genomics, proteomics, image analysis, cancer stem cell analysis (...). The [public server](https://wiki.galaxyproject.org/PublicGalaxyServers) web page of the galaxy team list all the available servers throughout the world (n=70 at the time of writing). 
+The [public server](https://wiki.galaxyproject.org/PublicGalaxyServers) web page of the galaxy team list all the available servers throughout the world (n=70 at the time of writing). 
 
-### Connecting to the pedagogix Galaxy server
+## Connecting to the pedagogix Galaxy server
 
-Note that the pedagogix server is only maintained for pedagogic purposes to propose privileged access to students from M2 BBSG and Polytech. It is not intended to be a production server as it is not heavily maintained.
+Note that the pedagogix server is only maintained for pedagogic purposes to propose privileged access to students from M2 BBSG and Polytech. It is not intended to be a production server as it is maintained minmally.
 
 ```{r, echo=FALSE}
-remdr$navigate("pedagogix-tagc.univ-mrs.fr/galaxy")
-remdr$screenshot(file = "img/galaxy.png")
+# remdr$navigate("pedagogix-tagc.univ-mrs.fr/galaxy")
+# remdr$screenshot(file = "img/galaxy.png")
 img <- readPNG("img/galaxy.png")
 options(warn=0)
 ```
 
-<img src="img/galaxy.png" width="100">
+- Open a connection to [pedagogix Galaxy server](http://pedagogix-tagc.univ-mrs.fr/galaxy/) (<http://pedagogix-tagc.univ-mrs.fr/galaxy/>). If this is your first connection, use the **Register** command. Otherwise, enter your login (use **Login** in the User **menu** at the top of the Galaxy window). 
 
-- Open a connection to [pedagogix Galaxy server](http://pedagogix-tagc.univ-mrs.fr/galaxy/). If this is your first connection, use the **Register** command. Otherwise, enter your login (use **Login** in the User **menu** at the top of the Galaxy window). 
+<img src="img/galaxy.png" width="100%">
 
 
+## Loading fastq files in galaxy
 
--------------------------------------------------------------------
+Analysis of the whole dataset would be time consuming. To make the analysis feasible within a reasonnable time, data were previously retrieved from SRA, fastq-transformed using SRA toolkit (fastq-dump) and mapped to the human genome (version hg19). This tutorial will be restricted to the subset of reads that aligned onto chromosome 10. 
 
-### Loading fastq files in galaxy
-
-Analysis of the whole dataset would be time consuming. To make the analysis feasible within a reasonnable time, data were previously retrieved from SRA, fastq-transformed using SRA toolkit (fastq-dump) and mapped to the human genome (version hg19). A subset of reads that aligned onto chromosome 10 was extracted and will be used for this tutorial. The following dataset are available.
+The following dataset are available.
 
 File name | Experiment  | Description |
 ----------|-------------|-------------|
@@ -163,9 +181,7 @@ File name | Experiment  | Description |
 
 Perform the same procedure with file 'SRR027889.SRR027891_chr10_2.fastq.gz' (the output name should be Control_2).
 
--------------------------------------------------------------------
-
-### Checking format with the galaxy groomer
+## Checking format with the galaxy groomer
 
 Once loaded into the galaxy framework the fastq file should be checked for their format using the groomer tool.
 
@@ -179,9 +195,7 @@ Once loaded into the galaxy framework the fastq file should be checked for their
 
 Perform the same procedure with dataset 'Control_2'.
 
--------------------------------------------------------------------
-
-### Quality control with FastQC
+## Quality control with FastQC
 
 **FastQC** aims to provide a simple way to do some **quality control** checks on raw sequence data coming from high throughput sequencing pipelines. It provides a modular set of analyses which you can use to give a quick impression of whether your data has any problems of which you should be aware before doing any further analysis. FastQC can be run as a stand alone interactive application for the immediate analysis of small numbers of FastQ files, in a non-interactive mode (through shell commands) where it would be suitable for integrating into a larger analysis pipeline for the systematic processing of large numbers of files or through the Galaxy framework.
 
@@ -200,9 +214,7 @@ It is important to stress that although the analysis results appear to give a pa
 
 Perform the same operation for **Control_2_groom** file.
 
-------------------------------------------------------------------------
-
-### Read trimming
+## Read trimming
 
 Read trimming is a pre-processing step in which input read ends are cutted (most generally the right end). Here, reads were previously trimmed. However one should keep in mind that this step is crucial when working with aligners. Indeed aligners may be unable to align a large fraction of the dataset when poor quality ends are kept. Several software may be used to perform sequence trimming:
 
@@ -230,18 +242,16 @@ Here we will use sickle.
 
 </div>
 
-------------------------------------------------------------------------
-
-### Getting the sequence of human chromosome 10 at UCSC
+## Getting the sequence of human chromosome 10 at UCSC
 
 ```{r, echo=FALSE}
-remdr$navigate("https://genome.ucsc.edu/")
-remdr$screenshot(file = "img/ucsc.png")
+# remdr$navigate("https://genome.ucsc.edu/")
+# remdr$screenshot(file = "img/ucsc.png")
 img <- readPNG("img/ucsc.png")
 options(warn=0)
 ```
 
-<img src="img/galaxy.png" width="100">
+<img src="img/galaxy.png" width="80%">
 
 
 Most of the time the galaxy server will provide you with an already indexed genome that can be used by tophat to perform read alignment. In this practical, we would like to restrict the alignment to chromosome 10 (this will be faster). We thus need to download the sequence of human chromosome 10. This sequence will be provided to tophat in the subsequent steps (tophat will perform sequence indexing internally by calling bowtie-build).
@@ -262,9 +272,7 @@ The sequence of the chr19 can be downloaded through the [UCSC web site](http://h
 **NB**: the chromosome sequence can also be obtained from [ensembl ftp web site](http://www.ensembl.org/info/data/ftp/index.html).
 
 
------------------------------------------------------------------
-
-### Downloading transcript annotation (ensembl) in gtf format
+## Downloading transcript annotation (ensembl) in gtf format
 
 
 In order to provide topHat with the location of known exons in the human genome, we will download a file in GTF format (Gene transfer format). You can get more information about this format on [UCSC web site](https://genome.ucsc.edu/FAQ/FAQformat.html#format4) or [GENCODE](http://www.gencodegenes.org/gencodeformat.html) web site.
@@ -284,11 +292,7 @@ Here we will download a GTF file containing information related transcript from 
 </div>
 
 
-
-
--------------------------------------------------------------------
-
-### Mapping read with TopHat
+## Mapping read with TopHat
 
 TopHat is a fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.
 
@@ -315,10 +319,7 @@ We will start by mapping the reads corresponding to control sample.
 **NB:** By default tophat will accept reads whose genomic mapping is ambiguous. This multi-mapped reads may be problematic in the downstream analysis. Indeed, keeping them may introduce spurious transcript models when trying to reconstruct underlying transcripts. However discarding them may also be problematic when computing expression levels of gene families.
 The **-g/--max-multihits** argument instructs TopHat to allow up to this many alignments to the reference for a given read, and choose the alignments based on their alignment scores if there are more than this number. The default is 20 for read mapping. Depending on the need, more stringent policy may be choosen (e.g -g 1 indicating that muti-mapped reads should be discarded). Additional arguments are available in the command line version of tophat including -x/--transcriptome-max-hits and -M/--prefilter-multihits.
 
--------------------------------------------------------------------
-
-
-### Checking the number of aligned reads
+## Checking the number of aligned reads
 
 We will used **samtools flagstat** to assess the number of aligned read available in the bam file.
 
@@ -326,16 +327,17 @@ We will used **samtools flagstat** to assess the number of aligned read availabl
 - Select the **BAM** file and press **Execute**.
 - Check the statistics. Is that expected ?
 
-### Viewing the results with Integrated Genome Browser (IGV).
+
+## Viewing the results with Integrated Genome Browser (IGV).
 
 ```{r, echo=FALSE}
-remdr$navigate("https://www.broadinstitute.org/igv/")
-remdr$screenshot(file = "img/igv.png")
+# remdr$navigate("https://www.broadinstitute.org/igv/")
+# remdr$screenshot(file = "img/igv.png")
 img <- readPNG("img/igv.png")
 options(warn=0)
 ```
 
-<img src="img/igv.png" width="100">
+<img src="img/igv.png" width="80%">
 
 
 The Integrative Genomics Viewer (IGV) is a high-performance visualization tool for interactive exploration of large, integrated genomic datasets. It supports a wide variety of data types, including array-based and next-generation sequence data, and genomic annotations.
@@ -359,9 +361,7 @@ The Integrative Genomics Viewer (IGV) is a high-performance visualization tool f
 </div>
 
 
--------------------------------------------------------------------
-
-### Creating a bigwig track
+## Creating a bigwig track
 
 As you may have notice the user needs to zoom inside IGV to visualize the alignments. This is due to the fact that BAM files may be very large (tens of Gb or more). Loading all information from the file would thus saturate the computer memory. We will thus create a more lightweight file that will just provide us with the mean coverage of each genomic region. This file in bigWig format will be compressed and indexed as the BAM files.
 
@@ -380,18 +380,16 @@ As you may have notice the user needs to zoom inside IGV to visualize the alignm
 
 </div>
 
--------------------------------------------------------------------
-
-### Using ensembl genome browser to get information about BAG3 and ENST00000454541
+## Using ensembl genome browser to get information about BAG3 and ENST00000454541
 
 ```{r, echo=FALSE}
-remdr$navigate("http://www.ensembl.org/index.html")
-remdr$screenshot(file = "img/ensembl.png")
+# remdr$navigate("http://www.ensembl.org/index.html")
+# remdr$screenshot(file = "img/ensembl.png")
 img <- readPNG("img/ensembl.png")
 options(warn=0)
 ```
 
-<img src="img/ensembl.png" width="100">
+<img src="img/ensembl.png" width="80%">
 
 
 Go to the ensembl [genome browser](http://www.ensembl.org/).
@@ -423,9 +421,7 @@ Get some information about : ENST00000454541
 
 </div>
 
-------------------------------------------------------------------------
-
-### Searching for novel transcript with cufflinks
+## Searching for novel transcript with cufflinks
 
 We can now use the cufflinks software to try to discover new transcripts inside the dataset. We will also provide cufflinks with the set of known transcript.
 
@@ -440,9 +436,7 @@ We can now use the cufflinks software to try to discover new transcripts inside 
 
 </div>
 
-------------------------------------------------------------------------
-
-### Extracting a workflow
+## Extracting a workflow
 
 Galaxy allows user to apply the developed pipeline to another set of sample. In order to do that, the user must create a **workflow**.
 
@@ -454,9 +448,8 @@ Galaxy allows user to apply the developed pipeline to another set of sample. In 
 
 </div>
 
-------------------------------------------------------------------------
 
-### Apply the workflow to the second sample
+## Applying the workflow to the second sample
 
 We will now apply this workflow to the sample corresponding to **activated T-cell**.
 
@@ -471,9 +464,7 @@ We will now apply this workflow to the sample corresponding to **activated T-cel
 
 </div>
 
-------------------------------------------------------------------------
-
-## Selecting unknown transcript
+## Selecting unknown transcripts
 
 We now have three different GTF files:
 
@@ -509,8 +500,6 @@ Create a new history named **assemby and quantification**.
 
 </div>
 
-----------------------------------------------------
-
 ## Quantification
 
 The objective of quantification is to estimate the expression level of each gene by counting the number of reads overlapping each gene model. Several software have been developed for this task (cuffdiff, featureCount, HTSeq-count,...). The FeatureCounts software is a light-weight read counting program written entirely in the C programming language.  It has a variety of advanced parameters but its major strength is its outstanding performance (10GB SE BAM file takes about 7 minutes on a single average CPU).
@@ -530,7 +519,6 @@ The objective of quantification is to estimate the expression level of each gene
 - Check the **Summary file**. What are **Unassigned_MultiMapping**, **Unassigned_NoFeatures**, **Unassigned_MappingQuality**, **Unassigned_Chimera** ?
 
 </div>
-----------------------------------------------------
 
 ## Descritive statistics with R
 
@@ -567,9 +555,18 @@ identify(count[,1], count[,2],lab=rownames(count))
 </div>
 
 
+********************************************************************************
+# Exercise
+
+
 ## What's about ENSG00000134460 ?
 
 The gene ENSG00000134460 seems to be strongly induced during T-cell activation. Go to Ensembl genome Browser and use the search area to get some information about it. Is this positive regulation expected ?
+
+********************************************************************************
+# References
+
+
 
 
 

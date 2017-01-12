@@ -50,6 +50,7 @@ Vous trouverez ci-dessous la liste des exercices réalisés.
 |-----|-------------------|--------|
 | [Tutoriel RNA-Seq](practical/rna_seq_galaxy/rnaseq_td_galaxy.html) | Traitement de données RNA-Seq | Galaxy server, TopHat, FastQC, cufflinks, cuffmerge, IGV, samtool flagstat, UCSC genome Browser, UCSC table Browser, UCSC FTP web site, Ensembl gene search, R...
 | [R quick tour](practical/R_first_steps/quick_tour.html) | Opérations de base avec R (réalisée sous forme de démo durant les TP) | R, RStudio |
+| [Premier pas avec R](practical/PremierPasR/PremierPasR.html) | Opérations de base avec R (réalisée sous forme de démo durant les TP) | R, RStudio |
 | Transcriptome microarrays | Analyse des données de biopuces; détection de gènes exprimés de façon différentielles (DEG) entre sous-types de cancers.  | R, RStudio |
 
 * * *  * * * * * *

@@ -1,8 +1,63 @@
 ---
 title: "Programme du cours 2017"
 author: "Nicolas Terrapon et Jacques van Helden"
-date: "1/4/2017"
-output: html_document
+date: 'First version: 2017-01-04; Last update: `r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  beamer_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
+    toc: yes
+  ioslides_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_md: no
+    slide_level: 2
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  slidy_presentation:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    highlight: tango
+    incremental: no
+    keep_md: no
+    self_contained: yes
+    slide_level: 2
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+font-import: http://fonts.googleapis.com/css?family=Risque
+font-family: Garamond
+transition: linear
 ---
 
 ```{r setup, include=FALSE}
@@ -27,7 +82,7 @@ knitr::opts_chunk$set(echo = TRUE)
 - Principe de l'anlayse différentielle (négative binomiale).
 - Interprétation de la p-valeur.
 - Corrections de tests multiples.
-- Intégration de la taille d'effet (log2-FC) et de la significativité (P-valeur corrigé) au moyen de volcano plots.
+- Intégration de la taille d'effet (log2-FC) et de la significativité (P-valeur corrigée) au moyen de volcano plots.
 
 - Visualisation des résultats
 
@@ -38,6 +93,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Ressources
 
 Serveur Galaxy sur pedagogix: <http://pedagogix-tagc.univ-mrs.fr/galaxy/>
+
+Serveur Galaxy sur rsatix: <http://rsat-tagc.univ-mrs.fr:8081>
 
 # Concepts
 

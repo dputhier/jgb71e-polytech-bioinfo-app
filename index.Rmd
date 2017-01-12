@@ -50,13 +50,19 @@ Vous trouverez ci-dessous la liste des exercices réalisés.
 |-----|-------------------|--------|
 | [Tutoriel RNA-Seq](practical/rna_seq_galaxy/rnaseq_td_galaxy.html) | Traitement de données RNA-Seq | Galaxy server, TopHat, FastQC, cufflinks, cuffmerge, IGV, samtool flagstat, UCSC genome Browser, UCSC table Browser, UCSC FTP web site, Ensembl gene search, R...
 | [R quick tour](practical/R_first_steps/quick_tour.html) | Opérations de base avec R (réalisée sous forme de démo durant les TP) | R, RStudio |
-| [Transcriptome microarrays](practical/microarrays/denboer_data/) | Analyse des données de biopuces; détection de gènes exprimés de façon différentielles (DEG) entre sous-types de cancers.  | R, RStudio |
+| Transcriptome microarrays | Analyse des données de biopuces; détection de gènes exprimés de façon différentielles (DEG) entre sous-types de cancers.  | R, RStudio |
 
 * * *  * * * * * *
 
-### Fichiers de données
+### TP analyse des données de biopuces
 
-#### Den Boer 2009
+#### Supports
+
+- [Principe du test de student](http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/practicals/microarrays_student_test/Student_test_info.html)
+- Tutorial "Student pas à pas", groupe 1: [source en format Rmd](practical/microarrays/student_pas-a-pas_groupe1.Rmd),  [rapport HTML](practical/microarrays/student_pas-a-pas_groupe1.html), .
+- Tutorial "Student pas à pas", groupe 2: [source en format Rmd](practical/microarrays/student_pas-a-pas_groupe2.Rmd),  [rapport HTML](practical/microarrays/student_pas-a-pas_groupe2.html), .
+
+#### Fichiers de données (Den Boer, 2009)
 
 | Contenu | Fichier |
 |---------|---------|

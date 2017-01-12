@@ -1,0 +1,222 @@
+---
+title: "Le test de Student pas à pas"
+author: "Jacques van Helden"
+date: "18 January 2016"
+output: html_document
+---
+
+* * * ** * * *  
+
+## Téléchargement d'une table de données d'expression
+
+Ouvrez une fenêtre de votre navigateur, et connectez-vous au site du cours d'analyse statistique des données génomiques:
+
+<http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/data/marrays>
+
+Téléchargez sur votre ordinateur les fichiers suivants: 
+
+| Fichier | Contenu |
+|---------|---------|
+| [GSE13425_Norm_Whole.txt](http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/data/marrays/GSE13425_Norm_Whole.txt)	 | Table d'expression (une ligne par gène, une colonne par patient)  |
+| [phenoData_GSE13425.tab](http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/data/marrays/phenoData_GSE13425.tab)	| Description des échantillons, une ligne par échantillon, un colonne par attribut  |
+
+Pour ce TP, nous supposerons que les deux tables ont été sauvegardées sur votre disque dur , dans un sous-dossier de votre bureau nommé TP_BIOINFOAPP.
+
+## Télécharger les génotypes des patients
+
+Nous allons maintenant charger dans R les tables que nous venons de télécharger sur notre disque dur.
+
+```{r}
+## Charger la table de données dans une variable de type data.frame
+denboer.expr <- read.delim(
+  file = "~/Desktop/tp_bioinfoapp/GSE13425_Norm_Whole.txt", 
+  row.names = 1)
+```
+
+Après avoir chargé une table de données, le premier réflexe est de vérifier son contenu. 
+
+Pour cela nous pouvons
+
+- mesurer ses dimensions avec la fonction *dim()*
+
+```{r}
+dim(denboer.expr)
+```
+
+- afficher les premières lignes de la table
+
+```{r}
+head(denboer.expr)
+
+denboer.expr[1:5,27:30]
+
+denboer.expr["HSPA6|117_at","GSM338697"]
+```
+
+
+Nous pouvons calculer le niveau moyen d'expression pour l'ensemble de la table de données. La fonction *mean()* calcule la moyenne d'un vecteur de nombres. Le problème est que la table de données n'est pas un vecteur, mais une structure de type *data.frame* (matrice avec des noms de lignes et de colonnes). Pour convertir cette matrice en vecteur, nous utilisons la formule magique *as.vector(as.matrix(...))* 
+
+```{r}
+## Générer un vecteur qui contient toutes les valeurs d'expression
+denboer.expr.vector <- as.vector(as.matrix(denboer.expr))
+length(denboer.expr.vector)
+dim(denboer.expr) ## Calculer les dimensions de la data.frame d'expression
+prod(dim(denboer.expr)) ## Le produit des nb de colonnes et de lignes de la table d'expression égale la longueur du vecteur (vérification)
+
+## Compute the mean, variance and standard deviation for the whole expression table
+mean(denboer.expr.vector)
+sd(denboer.expr.vector) ## écart-type (standard deviation)
+var(denboer.expr.vector) ## variance
+```
+
+
+
+## Calculer les moyennes d'expression par gène
+
+Nous allons dessiner un graphique comparant la moyenne (abscisse) et l'écart-type (ordonnée) d'expression pour chaque gène (chaque gène sera représenté par un point).
+
+Pour appliquer un clacul à chaque ligne de la table de données (chaque gène), nous utilisons la fonction R *apply()*. 
+
+```{r}
+## Calculer la moyenne de chaque gène (ligne) et conserver le résultat dans une variable nommée"mean.per.gene"
+mean.per.gene <- apply(X = denboer.expr, MARGIN = 1, FUN = mean)
+class(mean.per.gene) ## Retourne un vecteur de valeurs numériques
+length (mean.per.gene)
+
+## Idem pour 'écart-type (sd = standard deviation)
+sd.per.gene <- apply(X = denboer.expr, MARGIN = 1, FUN = sd)
+
+## La fonction "apply" permet également d'appliquer une fonction sur chaque colonne d'un tableau de données
+mean.per.sample <- apply(X = denboer.expr, MARGIN = 2, FUN = mean)
+length(mean.per.sample)
+
+```
+
+Nous allons maintenant dessiner un nuage de points pour comparer les moyennes et écart-types par gène. 
+
+```{r}
+plot(mean.per.gene, sd.per.gene)
+```
+
+## Lecture des types de leucémies
+
+Nous allons charger une table indiquant les types de leucémies associées) chaque patient. 
+
+<http://dputhier.github.io/jgb71e-polytech-bioinfo-app/>
+
+La table fournissant la description détaillée de chaque échantillon se trouve à l'URL suivant: 
+
+<http://dputhier.github.io/jgb71e-polytech-bioinfo-app/practical/microarrays/denboer_data/GSE13425_phenoData.txt>
+
+```{r}
+
+sample.descriptions <- read.delim(file = "http://dputhier.github.io/jgb71e-polytech-bioinfo-app/practical/microarrays/denboer_data/GSE13425_phenoData.txt", row.names = 1)
+
+dim(sample.descriptions)
+colnames(sample.descriptions)
+rownames(sample.descriptions)
+
+```
+
+## Choix de deux groupes (sous-types de leucémies) pour l'analyse différentielle
+
+```{r}
+## Afficher le contenu de la colonne "Sample_title" de la table sample.descriptions
+
+## Les trois commandes suivantes donnent le même résultat (seule la syntaxe diffère)
+print(sample.descriptions[,1])
+print(sample.descriptions[,"Sample_title"])
+print(sample.descriptions$Sample_title)
+
+## Générer une table de fréquences indiquant le nombre d'occurrences de chaque sous-type de leucémie dans les 190 échantillons de DenBoer
+table(sample.descriptions$Sample_title)
+
+## Choisissons arbitrairement de nous intéresser aux deux groupes suivants
+group1 <- "TEL-AML1"
+group2 <- "hyperdiploid"
+
+## Identification des échantillons (colonnes de la table d'expression) dont le type correspond au groupe 1
+sample.descriptions$Sample_title == group1
+sample.descriptions$Sample_title == group2
+
+
+```
+
+
+## Extraction de sous-ensembles de la table d'expression correspondant à  deux sous-types de leucémies
+
+```{r}
+## Sélection d'une sous-table contenant uniquement les valeurs d'expression du groupe 1
+expr.group1 <- denboer.expr[, sample.descriptions$Sample_title == group1]
+dim(expr.group1)
+
+## Sélection d'une sous-table contenant uniquement les valeurs d'expression du groupe 2
+expr.group2 <- denboer.expr[, sample.descriptions$Sample_title == group2]
+dim(expr.group2)
+
+```
+
+
+
+## Comparaison des moyennes d'expression entre 2 groupes
+
+```{r}
+mean.per.gene.group1 <- apply(X = expr.group1, MARGIN = 1, FUN = mean)
+mean.per.gene.group2 <- apply(X = expr.group2, MARGIN = 1, FUN = mean)
+plot(mean.per.gene.group1, mean.per.gene.group2, 
+     main="Comparaison des moyennes",
+     xlab=group1, ylab=group2,
+     col="pink")
+grid(col="blue")
+abline(a=0, b=1)
+```
+
+## Contrôle négatif: permutations des valeurs par ligne
+
+```{r}
+## Appliquer à chaque ligne de la table d'expression (gène) une permutation aléatoire des valeurs (sample)
+rand <- t(apply(denboer.expr, MARGIN = 1, sample))
+dim(rand)
+
+## Sélectionner les mêmes colonnes que précédemment, mais sur les données permutées
+rand1 <- rand[, sample.descriptions$Sample_title == group1]
+dim(rand1)
+rand2 <- rand[, sample.descriptions$Sample_title == group2]
+dim(rand2)
+
+mean.per.gene.rand1 <- apply(rand1, MARGIN = 1, FUN = mean)
+mean.per.gene.rand2 <- apply(rand2, MARGIN = 1, FUN = mean)
+
+plot(mean.per.gene.group1, mean.per.gene.group2, 
+     main="Comparaison des moyennes",
+     xlab=group1, ylab=group2,
+     col="brown")
+lines(mean.per.gene.rand1, mean.per.gene.rand2, col="pink", type="p")
+grid(col="blue")
+abline(a=0, b=1)
+```
+
+
+## Plot MA
+
+```{r}
+## Calcul de la différence de moyennes par gène entre les deux groupes (M)
+M <- mean.per.gene.group2 - mean.per.gene.group1
+
+## Calcul du niveau moyen d'expression des deux groupes (A)
+A <- (mean.per.gene.group2 + mean.per.gene.group1)/2
+
+  
+## Dessin d'un plot MA
+plot(A, M, col= "pink", main= "MA plot", xlab= "A: avergage expression of the two groups", ylab= "Difference")
+grid(col="blue")
+abline(h=0) ## Afficher l'axe correspondant à l'hypothèse nulle
+
+```
+
+
+## Principe du test de Student
+
+<http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/practicals/microarrays_student_test/Student_test_info.html>
+
+* * ** * * * ** 

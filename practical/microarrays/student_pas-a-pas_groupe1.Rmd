@@ -1,0 +1,246 @@
+---
+title: "Les test de Student pas à pas (groupe de TP 1)"
+author: "Jacques van Helden"
+date: "18 January 2016"
+output: html_document
+---
+
+## Chargement d'une table contenant les valeurs d'expression
+
+
+```{r}
+## Définir l'URL de la table de données d'expression
+expr.url <- "http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/data/marrays/GSE13425_Norm_Whole.txt"
+
+## On vérifie le résultat en imprimant le contenu de la variable
+print(expr.url)
+
+```
+
+La fonction *read.delim()* permet de charger une table de données en mémoire, à partir d'un fichier texte dont les colonnes sont délimitées par des tabulations (ou éventuellement d'autres symboles, la fonction est paramétrable). 
+
+Cette fonction permet de charger les données soit à partir d'un fichier local, soit à partir d'un URL. 
+
+Puisque le fichier est disponible sur un site Web, le plus simple est de le télécharger directement en indiquant l'URL. 
+
+```{r}
+## Charger la table de données d'expression à partir de l'URL
+expr <- read.delim(file = expr.url, row.names = 1)
+
+```
+
+La première chose à faire après avoir chargé une table de données est de mesurer ses dimensions avec la fonction *dim()*.
+
+```{r}
+dim(expr)
+```
+
+Nous pouvons utiliser la fonction *head()* pour afficher les 5 premières lignes de la table. 
+
+```{r}
+head(expr, n = 5)
+```
+
+Une autre possibilité est d'afficher un petit coin de la table en sélectionnant des lignes et des colonnes. 
+
+```{r}
+expr[1:5, 1:4] ## Afficher les 5 premières lignes et 4 premières colonnes
+```
+
+Les fonctions *rownames()* et *colnames()* permettent d'accéder aux "étiquettes" (noms) des lignes et des colonnes. 
+```{r}
+rownames(expr)[1:20] ## Afficher les 20 premiers noms de lignes
+
+colnames(expr)[1:20] ## Afficher les 20 premiers noms de colonnes
+
+```
+
+On peut sélectionner des colonnes ou des lignes en se référant aux étiquettes plutôt qu'à leurs indices numériques.
+
+```{r}
+expr["CYP2A6|1494_f_at", "GSM338672"] ## Afficher la valeur d'expression du gène CYP2A6 dans l'échantillon GSM338672
+```
+
+## Calcul de paramètres statistiques
+
+### Sur l'ensemble de la table
+
+Dans un premier temps, nous allons calculer les paramètres classiques de description d'un ensemble de données: moyenne, écart-type, variance, sur l'ensemble de la table d'expression.
+
+Les fonctions *mean()*, *sd()* et *var()* permettent de calculer la moyenne, l'écart-type et la variance d'un **vecteur**. Malheureusement nos données sont formatées en *data.frame()* (table avec des étiquettes sur les lignes et les colonnes + quelques autres particularités). Nous devons donc d'abord convertir notre data.frame en vecteur, pour pouvoir calculer la moyenne globale.
+
+```{r}
+## Conversion des valeurs de la data.frame
+expr.vector <- as.vector(as.matrix(expr))
+length(expr.vector) ## Print the length of the resulting vector
+ncol(expr) * nrow(expr)
+
+mean(expr.vector) ## Mean value for the whole expression table
+sd(expr.vector) ## Standard deviation for all values of the whole expression table
+var(expr.vector) ## Variance for all values of the whole expression table
+```
+
+
+#### Histogramme des valeurs d'expression
+
+```{r}
+hist(expr.vector)
+```
+
+
+### Par gène, tous patients confondus. 
+
+
+```{r}
+## Calculer la moyenne et l'écart-type pour chaque gène. 
+## Nous utilisons la fonction apply(), en spécifiant MARGIN=1, qui indique qu'il faut calculer les moyennes sur les lignes (gènes)
+mean.per.gene <-  apply(X = expr, MARGIN = 1, FUN = mean)
+sd.per.gene <-  apply(X = expr, MARGIN = 1, FUN = sd)
+
+## Compute some statistics per column (sample)
+## L'option MARGIN=2 indique qu'il faut calculer les statistiques par colonne (échantillon)
+mean.per.sample <- apply(X = expr, MARGIN = 2, FUN = mean)
+median.per.sample <- apply(X = expr, MARGIN = 2, FUN = median)
+
+```
+
+
+
+### Comparaison entre la moyenne et l'écart-type de l'expression par gène
+
+```{r}
+plot(mean.per.gene, sd.per.gene)
+```
+
+
+### Par gène et par sous-type de leucémie
+
+Nous allons maintenant télécharger un tableau indiquant le sous-type de leucémie associé à chaque échantillon. 
+
+```{r}
+sample.types.url <- "http://dputhier.github.io/jgb71e-polytech-bioinfo-app/practical/microarrays/denboer_data/denboer2009_GSE13425_sample_subtype.tab"
+
+sample.types <- read.delim(sample.types.url, row.names = 1)
+dim(sample.types)
+head(sample.types)
+```
+
+Avant de procéder à l'analyse différentielle, nous voudrions compter le nombre d'échantillons par sous-type de cancer. Pour cela, nous pouvons utiliser la fonction *table()*.
+
+```{r}
+table(sample.types)
+```
+
+Nous constatons que certains types de leucémie sont bien représentés (>30 échantillons sanguins par sous-type) et d'autres moins (1, 4, 8 échantillon par sous-type). Pour le reste de cette analyse, nous nous baserons sur les deux sous-types "hyperdiploid" et "pre-B ALL". 
+
+```{r}
+group1 <- "hyperdiploid"
+group2 <- "pre-B ALL"
+
+class(sample.types)  ## Vérifier le type de variable de sample.types
+
+sample.type.vector <- sample.types$Sample_title
+print(sample.type.vector)
+length(sample.type.vector)
+
+## Tester pour chaque entrée du vecteur si elle est égale à la valeur de group1 ("hyperdiploid")
+sample.types$Sample_title == group1
+
+## tester chaque entrée du vecteur "sample.type.vector" pour savoir si elle est égale au groupe 1
+sample.types$Sample_title == group1
+
+## Identifier les colonnes pour lesquelles le sous-type est "hyperdiploid"
+group1.columns <- which(sample.types$Sample_title == group1)
+print(group1.columns)
+## le résultat est une liste d'indices de colonnes
+
+group2.columns <- which(sample.types$Sample_title == group2)
+print(group2.columns)
+
+## Sélectionner une sous-table d'expression comportant uniquement les échantillons (colonnes) du groupe 1
+expr.group1 <- expr[,group1.columns]
+dim(expr.group1)
+
+## On sélectionne la sous-table d'expression pour le deuxième groupe, avec une formulation plus compacte
+expr.group2 <- expr[, sample.type.vector == group2]
+dim(expr.group2)
+```
+
+La manière la plus intuitive de comparer les moyennes entre groupes est de dessiner un nuage de points ("XY plot", "scatterplot" en anglais) comparant les vecteurs d'expression moyennes par gène entre les deux groupes. 
+
+```{r}
+
+mean.per.gene.group1 <- apply(X = expr.group1, MARGIN = 1, FUN = mean)
+mean.per.gene.group2 <- apply(X = expr.group2, MARGIN = 1, FUN = mean)
+
+plot(mean.per.gene.group1, mean.per.gene.group2,
+     col="grey",
+     xlab=group1, ylab=group2,main="Mean expression per gene")
+grid(col="blue")
+
+## Marquons la diagonale, qui correspond à l'hypothèse nulle 
+## H0: mu1 = mu2
+abline(a = 0, b = 1) ## Droite de pente 1 (b=1) et d'intersect 0 (a=0)
+
+```
+
+Note technique: les valeurs que nous avons téléchargées sont normalisées en suivant une transformation logarithmique (log2). 
+La différence entre deux valeurs correspond donc en fait à un log-ratio des valeurs avant transformation. 
+
+Nous allons maintenant générer un autre graphique qui indique explicitement la différence entre les moyennes ($d = m2 - m1$) en fonction de l'expression moyenne des deux groupes (la moyenne des moyennes). Comme nous travaillons avec des données logarithmiques, ceci correspond en fait à un MA plot (<https://en.wikipedia.org/wiki/MA_plot>) sur les données originales.
+
+```{r}
+## Différence d'expression 
+M <- mean.per.gene.group2 - mean.per.gene.group1
+A <- (mean.per.gene.group1 + mean.per.gene.group2) / 2
+
+plot(A, M,
+     col="grey",
+     ylim=c(-3,3),
+     xlab="A (moyenne des deux groupes)", ylab="M (différence entre les groupes)",main="Mean expression per gene")
+grid(col="blue")
+
+## Marquons l'axe des X (M=0), qui correspond à l'hypothèse nulle 
+## H0: mu2 - mu1 = 0
+abline(h = 0) ## Droite horizontale d'intersect 0 (a=0)
+```
+
+
+## Contrôle négatif
+
+Appliquons le même test pour des données aléatoires suivant une loi normale, avec deux groupes de moyennes égales. 
+
+```{r}
+
+## Générer une table avec les mêmes valeurs que dans la table d'expression, mais en permutant les valeurs au sein de chaque ligne
+rand <- t(apply(expr, MARGIN = 1, sample))
+
+rand1 <- rand[, group1.columns]
+rand2 <- rand[, group2.columns]
+
+rand1.mean.per.row <- apply(rand1, 1, mean)
+rand2.mean.per.row <- apply(rand2, 1, mean)
+
+plot(rand1.mean.per.row, rand2.mean.per.row, col="grey")
+grid(col="blue")
+abline(a=0, b=1)
+
+rand.M <- rand2.mean.per.row - rand1.mean.per.row
+rand.A <- (rand2.mean.per.row + rand1.mean.per.row)/2
+plot(rand.A, rand.M, ylim=c(-3,3))
+
+
+
+```
+
+
+## Le test de Student
+
+### Principe du test de Student
+
+<http://pedagogix-tagc.univ-mrs.fr/courses/ASG1/>
+
+
+
+
+

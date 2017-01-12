@@ -79,7 +79,16 @@ We selected  tiny subset of the original data, in order to be able to run a repr
 
 ### Description of the study case
 
-The study case consists of paired-end strand-oriented RNA-seq samples from the mouse *Mus musculus*. In order to ensure a quick treatment for this tutorial, we selected the subset of reads restricted to a 30Mb region located on the mouse chromosome 18 (a small chromosome). 
+The study case consists of paired-end strand-oriented RNA-seq samples from the mouse (*Mus musculus*) cell line P5424, which was derived from a population of T lymphocytes (i.e. thymocytes). Cells were culture in two conditions:
+
+- Treated: cells were submitted to a mixture of phorbol 12-myristate 13-acetate **PMA** and **Ionomycin**. This treatment is known to activate the cell, and affects the expression of many genes in lymphocytes. 
+- Control: cells treated with **DMSO** (files with DM prefix)
+
+The goal of the experiment was to detect **Differentially Expressed Genes** (**DEG**) between treated and untreated cells.
+
+Sequencing was done in strand-oriented paired ends, with 150bp reads on each side of the fragments. 
+
+In order to ensure a quick treatment for this tutorial, we selected the subset of reads restricted to a 30Mb region located on the mouse chromosome 18 (a small chromosome). 
 
 ### Cours en français
 

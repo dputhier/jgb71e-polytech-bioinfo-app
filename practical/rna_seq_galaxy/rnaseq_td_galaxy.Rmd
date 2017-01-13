@@ -371,7 +371,7 @@ GTF file can be obtained both from **UCSC** [table browser](https://genome.ucsc.
 **Here** we will use a GTF file containing information related to transcripts from mouse chromosome 18. This GTF file **was obtained from GENCODE** [web site](http://www.gencodegenes.org/mouse_stats/current.html) (Version M1 July 2011). Annotations are based on Ensembl server version 65. 
 
 <div class="protocol">
-- Select **Shared Data > Data Libraries > TlemCen 2016 > GTF >  chr18_20M-50M_gencode_vM1.gtf > Import this dataset into selected history**. In the new window select **DM1** as **Destination history**. Click on **Import library dataset**.
+- Select **Shared Data > Data Libraries > P5424_chr18-20Mto50M > GTF >  chr18_20M-50M_gencode_vM1.gtf > Import this dataset into selected history**. In the new window select **DM1** as **Destination history**. Click on **Import library dataset**.
 - Select **Analyze Data** in the upper menu.**.
 
 </div>
@@ -439,23 +439,34 @@ We will used **samtools flagstat** to assess the number of aligned read availabl
 
 ****************************************************************
 
-
 ## Viewing the results with Integrated Genome Browser (IGV).
 
 The Integrative Genomics Viewer (IGV) is a high-performance visualization tool for interactive exploration of large, integrated genomic datasets. It supports a wide variety of data types, including array-based and next-generation sequence data, and genomic annotations.
 
 <div class="protocol">
+- Download the tophat result files from Galaxy to your computer: 
 
-- Create an IGV account [here](https://www.broadinstitute.org/igv/?q=registration).
-- Download IGV and launch it with 750 MB or 1.2 Gb depending of your machine.
-- Select **mm9** as a genome and browse to **chromosome 18**.
-- In galaxy select tophat result (bam format) and download the **bam** file.
-- In galaxy select tophat result (bam format) and download the **bai** file.
+    - In **Galaxy**, select tophat result (bam format) and download the **bam** file.
+    - Select tophat result (bam format) and download the **bai** file.
+    - Select tophat result (**control_splice_junctions.bed**) and download the **bed** file. If this file does not contain a **bed** extension, rename it to add **.bed**.
+
+- Open a connection to the Integrative Genomics Viewer (**IGV**) download page:
+	<https://software.broadinstitute.org/software/igv/download>
+- Download and open IGV or launch it with 750 MB or 1.2 Gb depending of your machine.
+- Select **mm9** as a genome and browse to **chromosome 18**. 
+
+    - **Do not** check the option "Download sequences", because this would download several Gb of genomic sequences on your computer, which would take time and mobilise disk pace unnecessarily. 
+    
+- In IGV, select the menu function File -> Load from file …, locate the download folder on your computer, select the bam file., and click Open. 
+
+    Note: you do not need to load the bam index (bai) file because it will be loaded automatically with the bam file of the same name. 
+
+- In the same way, load the splice junction file (bed format). 
+
 - In IGV, go to the **Egr1** gene (by typing 'Egr1' in the **GO** text area).
 - Zoom to view alignments.
 - In the left panel right click on the bam file name and select **View as pairs**.
 - In the left panel right click on the bam file name and set **Color Alignments by > Read strand**.
-- In galaxy select tophat result (**control_splice_junctions.bed**) and download the **bed** file. If this file does not contain a **bed** extension, rename it to add **.bed**.
 - Load the **control_splice_junctions.bed** into IGV (File > Load from file).
 - Unzoom to view the number of alignments supporting exon junctions.
 - Mouse over a junction on of **control_splice_junctions.bed** track. What is the **Depth** about ?
@@ -531,12 +542,12 @@ We can now use the cufflinks software to try to discover new transcripts inside 
 <div class="protocol">
 
 - In the toolbox, select **NGS: RNA Analysis > Cufflinks**.
-- Select the bam file in the **SAM or BAM file of aligned RNA-Seq reads** menu.
+- Select the **tophat2 accepted hits** in the **SAM or BAM file of aligned RNA-Seq reads** menu.
 - Set **Set advanced Cufflinks options** to **yes**.
+- Set **Library prep used for input read** to **fr-firststranded**.
 - Set **Use Reference Annotation** to **Use reference annotation as guide**.
 - Set **Reference Annotation** to **chr18_20M-50M_gencode_vM1.gtf**.
-- Set **Library prep used for input read** to **fr-firststranded**.
-- Press **execute**.
+- Press **Execute**.
 - Rename **assembled transcript** dataset to **DM1_transcripts**.
 
 </div>
@@ -669,7 +680,7 @@ The objective of quantification is to estimate the expression level of each gene
 
 
 ****************************************************************
-# Descritive statistics with R
+# Descriptive statistics with R
 
 <div class="protocol">
 

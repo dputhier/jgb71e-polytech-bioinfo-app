@@ -246,7 +246,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">RNA-Seq analysis: practical session using Tuxedo suite</h1>
 <h4 class="author"><em>Denis Puthier, revised by Jacques van Helden</em></h4>
-<h4 class="date"><em>First version: 11 janvier 2016; last update: 2017-01-11</em></h4>
+<h4 class="date"><em>First version: 11 janvier 2016; last update: 2017-01-13</em></h4>
 
 </div>
 
@@ -291,7 +291,14 @@ hr {
 <p>We selected tiny subset of the original data, in order to be able to run a representative variety of tools during the practicals.</p>
 <div id="description-of-the-study-case" class="section level3">
 <h3>Description of the study case</h3>
-<p>The study case consists of paired-end strand-oriented RNA-seq samples from the mouse <em>Mus musculus</em>. In order to ensure a quick treatment for this tutorial, we selected the subset of reads restricted to a 30Mb region located on the mouse chromosome 18 (a small chromosome).</p>
+<p>The study case consists of paired-end strand-oriented RNA-seq samples from the mouse (<em>Mus musculus</em>) cell line P5424, which was derived from a population of T lymphocytes (i.e. thymocytes). Cells were culture in two conditions:</p>
+<ul>
+<li>Treated: cells were submitted to a mixture of phorbol 12-myristate 13-acetate <strong>PMA</strong> and <strong>Ionomycin</strong>. This treatment is known to activate the cell, and affects the expression of many genes in lymphocytes.</li>
+<li>Control: cells treated with <strong>DMSO</strong> (files with DM prefix)</li>
+</ul>
+<p>The goal of the experiment was to detect <strong>Differentially Expressed Genes</strong> (<strong>DEG</strong>) between treated and untreated cells.</p>
+<p>Sequencing was done in strand-oriented paired ends, with 150bp reads on each side of the fragments.</p>
+<p>In order to ensure a quick treatment for this tutorial, we selected the subset of reads restricted to a 30Mb region located on the mouse chromosome 18 (a small chromosome).</p>
 </div>
 <div id="cours-en-francais" class="section level3">
 <h3>Cours en français</h3>
@@ -623,7 +630,7 @@ hr {
 <p><strong>Here</strong> we will use a GTF file containing information related to transcripts from mouse chromosome 18. This GTF file <strong>was obtained from GENCODE</strong> <a href="http://www.gencodegenes.org/mouse_stats/current.html">web site</a> (Version M1 July 2011). Annotations are based on Ensembl server version 65.</p>
 <div class="protocol">
 <ul>
-<li>Select <strong>Shared Data &gt; Data Libraries &gt; TlemCen 2016 &gt; GTF &gt; chr18_20M-50M_gencode_vM1.gtf &gt; Import this dataset into selected history</strong>. In the new window select <strong>DM1</strong> as <strong>Destination history</strong>. Click on <strong>Import library dataset</strong>.</li>
+<li>Select <strong>Shared Data &gt; Data Libraries &gt; P5424_chr18-20Mto50M &gt; GTF &gt; chr18_20M-50M_gencode_vM1.gtf &gt; Import this dataset into selected history</strong>. In the new window select <strong>DM1</strong> as <strong>Destination history</strong>. Click on <strong>Import library dataset</strong>.</li>
 <li>Select <strong>Analyze Data</strong> in the upper menu.**.</li>
 </ul>
 </div>
@@ -693,19 +700,28 @@ hr {
 <p>The Integrative Genomics Viewer (IGV) is a high-performance visualization tool for interactive exploration of large, integrated genomic datasets. It supports a wide variety of data types, including array-based and next-generation sequence data, and genomic annotations.</p>
 <div class="protocol">
 <ul>
-<li>Create an IGV account <a href="https://www.broadinstitute.org/igv/?q=registration">here</a>.</li>
-<li>Download IGV and launch it with 750 MB or 1.2 Gb depending of your machine.</li>
-<li>Select <strong>mm9</strong> as a genome and browse to <strong>chromosome 18</strong>.</li>
-<li>In galaxy select tophat result (bam format) and download the <strong>bam</strong> file.</li>
-<li>In galaxy select tophat result (bam format) and download the <strong>bai</strong> file.</li>
+<li><p>Download the tophat result files from Galaxy to your computer:</p>
+<ul>
+<li>In <strong>Galaxy</strong>, select tophat result (bam format) and download the <strong>bam</strong> file.</li>
+<li>Select tophat result (bam format) and download the <strong>bai</strong> file.</li>
+<li>Select tophat result (<strong>control_splice_junctions.bed</strong>) and download the <strong>bed</strong> file. If this file does not contain a <strong>bed</strong> extension, rename it to add <strong>.bed</strong>.</li>
+</ul></li>
+<li>Open a connection to the Integrative Genomics Viewer (<strong>IGV</strong>) download page: <a href="https://software.broadinstitute.org/software/igv/download" class="uri">https://software.broadinstitute.org/software/igv/download</a></li>
+<li>Download and open IGV or launch it with 750 MB or 1.2 Gb depending of your machine.</li>
+<li><p>Select <strong>mm9</strong> as a genome and browse to <strong>chromosome 18</strong>.</p>
+<ul>
+<li><strong>Do not</strong> check the option “Download sequences”, because this would download several Gb of genomic sequences on your computer, which would take time and mobilise disk pace unnecessarily.</li>
+</ul></li>
+<li><p>In IGV, select the menu function File -&gt; Load from file …, locate the download folder on your computer, select the bam file., and click Open.</p>
+<p>Note: you do not need to load the bam index (bai) file because it will be loaded automatically with the bam file of the same name.</p></li>
+<li><p>In the same way, load the splice junction file (bed format).</p></li>
 <li>In IGV, go to the <strong>Egr1</strong> gene (by typing ‘Egr1’ in the <strong>GO</strong> text area).</li>
 <li>Zoom to view alignments.</li>
 <li>In the left panel right click on the bam file name and select <strong>View as pairs</strong>.</li>
 <li>In the left panel right click on the bam file name and set <strong>Color Alignments by &gt; Read strand</strong>.</li>
-<li>In galaxy select tophat result (<strong>control_splice_junctions.bed</strong>) and download the <strong>bed</strong> file. If this file does not contain a <strong>bed</strong> extension, rename it to add <strong>.bed</strong>.</li>
 <li>Load the <strong>control_splice_junctions.bed</strong> into IGV (File &gt; Load from file).</li>
 <li>Unzoom to view the number of alignments supporting exon junctions.</li>
-<li>Mouse over a junction on of <strong>control_splice_junctions.bed</strong> track. What is the <strong>Depth</strong> about ?</li>
+<li><p>Mouse over a junction on of <strong>control_splice_junctions.bed</strong> track. What is the <strong>Depth</strong> about ?</p></li>
 </ul>
 </div>
 <div class="exo">
@@ -784,12 +800,12 @@ hr {
 <div class="protocol">
 <ul>
 <li>In the toolbox, select <strong>NGS: RNA Analysis &gt; Cufflinks</strong>.</li>
-<li>Select the bam file in the <strong>SAM or BAM file of aligned RNA-Seq reads</strong> menu.</li>
+<li>Select the <strong>tophat2 accepted hits</strong> in the <strong>SAM or BAM file of aligned RNA-Seq reads</strong> menu.</li>
 <li>Set <strong>Set advanced Cufflinks options</strong> to <strong>yes</strong>.</li>
+<li>Set <strong>Library prep used for input read</strong> to <strong>fr-firststranded</strong>.</li>
 <li>Set <strong>Use Reference Annotation</strong> to <strong>Use reference annotation as guide</strong>.</li>
 <li>Set <strong>Reference Annotation</strong> to <strong>chr18_20M-50M_gencode_vM1.gtf</strong>.</li>
-<li>Set <strong>Library prep used for input read</strong> to <strong>fr-firststranded</strong>.</li>
-<li>Press <strong>execute</strong>.</li>
+<li>Press <strong>Execute</strong>.</li>
 <li>Rename <strong>assembled transcript</strong> dataset to <strong>DM1_transcripts</strong>.</li>
 </ul>
 </div>
@@ -923,8 +939,8 @@ hr {
 <hr />
 </div>
 </div>
-<div id="descritive-statistics-with-r" class="section level1">
-<h1>Descritive statistics with R</h1>
+<div id="descriptive-statistics-with-r" class="section level1">
+<h1>Descriptive statistics with R</h1>
 <div class="protocol">
 <ul>
 <li>Download the gene expression table produced by featureCount.</li>

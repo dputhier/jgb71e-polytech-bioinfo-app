@@ -129,7 +129,9 @@ Note that the created tables include column names as factor object.
 
 **Reminder:** a factor is a vector with levels (categories), which permits an efficient storage and indexing, but can in some cases lead to misleading effects. To circumvent this, we will sometimes have to convert the factor to a vector, with the R command *as.vector()*.
 
-```{r load_data, eval=TRUE}
+```{r load_data_teacher, eval=TRUE, echo=FALSE}
+## This code is useful to prepare the tutorial, but it is a bit too complex for the beginners, so we don't show it. Instead, we show  below a simplfied code that we don't evaluate to avoir re-downloading the tables at each compilation with knitr.
+
 # List of url and file names
 url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data"
 countFile <- "counts.txt"
@@ -167,7 +169,31 @@ colnames(phenoTable)
 
 ```
 
+```{r load_data_student, eval=FALSE, echo=TRUE}
 
+# Load the count table
+countTable <- read.table("http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data/counts.txt", header=TRUE, row.names=1)
+
+# View part of the data/table
+countTable[101:108, 1:5]
+
+# Load the sample description file 
+# (traditionally named "pheno" for "phenotype", athough in our case the conditions are genotypes)
+phenoTable <- read.table("http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data/expDesign.txt", header=TRUE, row.names=1)
+
+
+# Define a strain-specific color for each sample, and add it as a supplementary column
+strainColor <- c("WT"="green","Snf2"="orange") # Choose one color per strain
+print(strainColor)
+
+## Add a column to the pheno type to specify the color of each sample according to its genotype
+phenoTable$color[phenoTable$strain == "Snf"] <- strainColor["Snf2"]
+phenoTable$color[phenoTable$strain == "WT"] <- strainColor["WT"]
+
+# Check the dimensions of the pheno table
+colnames(phenoTable)
+
+```
 
 #### Exercice
 
@@ -277,14 +303,14 @@ summary(countTable[,1:4])
 
 Among the reference functions in **R**, *apply* (and its derivates) allow to repeated execution of a function to a serie of data, at a noteworthy higher speed tha using *for* loops. Note that, if working on a matrix/data frame, the *apply* function requires that you indicate if you want to apply the function to the rows (MARGIN=1) or to the columns (MARGIN=2). Some built-in functions already exist as *colMeans*, *colSums*, *rowMeans* and *rowSums*. Let's use apply to get the *summary* for every column of the count table. It produces a matrix as output that we transpose to obtain samples as rows and the statistics as columns, and move back to a *data.frame* object.
 
-```{r stats_per_sample1, eval=FALSE}
+```{r stats_per_sample1, eval=TRUE}
 statsPerSample <- data.frame(t(apply(countTable, 2, summary)))
 head(statsPerSample)
 ```
 
 We can now add some columns to the stats per sample. For example, here are the library sums and the 5% quantile.
 
-```{r stats_per_sample2, eval=FALSE}
+```{r stats_per_sample2, eval=TRUE}
 statsPerSample$libsum <- colSums(countTable) # library sums
 statsPerSample$perc05 <- apply(countTable, 2, quantile, probs=0.05)
 ```
@@ -296,7 +322,7 @@ Integrate some more columns to *statsPerSample*:
 <a href="javascript:sizeTbl2('block','ex5')">View solution</a>|<a href="javascript:sizeTbl2('none','ex5')">Hide solution</a>
 <div id="ex5"  style="overflow:hidden;display:none">
 
-```{r stats_per_sampleEx1, eval=FALSE}
+```{r stats_per_sampleEx1, eval=TRUE}
 statsPerSample[c("perc10", "perc90", "perc95")] <- 
   apply(countTable, 2, quantile, c(0.10, 0.90, 0.95))
 ```
@@ -308,7 +334,7 @@ statsPerSample[c("perc10", "perc90", "perc95")] <-
 <a href="javascript:sizeTbl2('block','ex6')">View solution</a>|<a href="javascript:sizeTbl2('none','ex6')">Hide solution</a>
 <div id="ex6"  style="overflow:hidden;display:none">
 
-```{r stats_per_sampleEx2, eval=FALSE}
+```{r stats_per_sampleEx2, eval=TRUE}
 statsPerSample$zeros <- apply(countTable==0, 2, sum)
 ```
 </div>
@@ -318,7 +344,7 @@ statsPerSample$zeros <- apply(countTable==0, 2, sum)
 <a href="javascript:sizeTbl2('block','ex7')">View solution</a>|<a href="javascript:sizeTbl2('none','ex7')">Hide solution</a>
 <div id="ex7"  style="overflow:hidden;display:none">
 
-```{r stats_per_sampleEx3, eval=FALSE}
+```{r stats_per_sampleEx3, eval=TRUE}
 statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
 ```
 
@@ -328,10 +354,16 @@ statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
 
 Finally, randomly choose (with the `sample()` function) 10 samples (rows) of the stats per sample table and look at their statistics.
 
-```{r stats_per_sampleEx4, eval=FALSE}
+```{r stats_per_sampleEx4, eval=FALSE, echo=TRUE}
 statsPerSample[sample(1:ncol(countTable), size = 10),]
 
+```
+
+We show hereafter the statistics per sample (subset only). 
+
+```{r stats_per_sample_subset, eval=TRUE, echo=FALSE}
 ## We can nicely format the result for the report, using the knitr::kable function
+library(knitr)
 kable(statsPerSample[sample(1:ncol(countTable), size = 10),])
 ```
 

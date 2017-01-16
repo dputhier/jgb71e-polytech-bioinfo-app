@@ -75,7 +75,7 @@ transition: linear
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE, warning = FALSE,
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = FALSE, message = FALSE, warning = FALSE,
                       comment = "")
 
 # Options to display pretty numbers
@@ -112,7 +112,7 @@ The expression matrix and phenotypic information will be loaded into **R** using
 
 Note that the created tables include column names as factor object. Reminder: a factor is a vector with levels (categories), which permits an efficient storage and indexing, but can in some cases lead to misleading effects. To circumvent this, we will sometimes have to convert the factor to a vector, with the R command *as.vector()*.
 
-```{r, eval=FALSE}
+```{r load_data, eval=TRUE}
 # List of url and file names
 url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data"
 countFile <- "counts.txt"
@@ -142,13 +142,17 @@ phenoTable <- read.table(phenoFile, header=TRUE, row.names=1)
 countTable[101:108, 1:5]
 
 # Define a strain-specific color for each sample, and add it as a supplementary column
-phenoTable$color[phenoTable$strain == "Snf"] <- "orange"
-phenoTable$color[phenoTable$strain == "WT"] <- "green"
+strainColor <- c("WT"="green","Snf2"="orange") # Choose one color per strain
+## Define the column of each sample according to its genotype
+phenoTable$color[phenoTable$strain == "Snf"] <- strainColor["Snf2"]
+phenoTable$color[phenoTable$strain == "WT"] <- strainColor["WT"]
 colnames(phenoTable)
 head(phenoTable)
 tail(phenoTable)
 
 ```
+
+
 
 #### Exercice
 <div class="exo">
@@ -161,6 +165,7 @@ tail(phenoTable)
   head(phenoTable)
   tail(phenoTable)
 ```
+
 </div>
 <br>
 
@@ -169,13 +174,14 @@ tail(phenoTable)
 <a href="javascript:sizeTbl2('block','ex2')">View solution</a>|<a href="javascript:sizeTbl2('none','ex2')">Hide solution</a>
 <div id="ex2"  style="overflow:hidden;display:none">  
 
+
 ```{r, eval=FALSE}
-  nb.samples <- ncol(countTable)
-  print(nb.samples)
-  nb_genes <- nrow(countTable)
-  print(nb_genes)
-  
-  dim(phenoTable)
+nb.samples <- ncol(countTable)
+print(nb.samples)
+nb_genes <- nrow(countTable)
+print(nb_genes)
+
+dim(phenoTable)
 ```
 </div>
 <br>
@@ -332,6 +338,7 @@ library(affy)
 plotDensity(log2(countTable + epsilon), lty=1, col=phenoTable$color, lwd=2)
 grid()
 legend("topright", legend=names(strainColor), col=strainColor, lwd=2)
+
 ```
 
 **Beware**: the R function *plotDensity* does not display the actual distribution of your values, but a polynomial fit. The representation thus generally looks smoother than the actual data. It is important to realize that, in some particular cases, the fit can lead to extrapolated values which can be misleading.

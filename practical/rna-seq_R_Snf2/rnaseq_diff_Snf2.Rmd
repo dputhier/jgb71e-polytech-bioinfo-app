@@ -114,29 +114,40 @@ Note that the created tables include column names as factor object. Reminder: a 
 
 ```{r, eval=FALSE}
 # List of url and file names
-  url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data"
-  countFile <- "counts.txt"
-  phenoFile <- "expDesign.txt"
+url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data"
+countFile <- "counts.txt"
+phenoFile <- "expDesign.txt"
 
-# Download the data files
-  if(!file.exists(countFile))
-    download.file(url = file.path(url,countFile), destfile = countFile )
+## Local paths: create a directory to store the data and results
+dataDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/data")
+dir.create(dataDir, showWarnings = FALSE, recursive = TRUE)
+resultDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/results")
+dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
 
-  if(!file.exists(phenoFile))
-    download.file(url = file.path(url,phenoFile), destfile = phenoFile )
+
+# Download the data files unless they are already here
+setwd(dataDir)
+
+if(!file.exists(countFile))
+  download.file(url = file.path(url,countFile), destfile = countFile )
+
+if(!file.exists(phenoFile))
+  download.file(url = file.path(url,phenoFile), destfile = phenoFile )
 
 # Load the count table
-  countTable <- read.table(countFile, header=TRUE, row.names=1)
-  phenoTable <- read.table(phenoFile, header=TRUE, row.names=1)
+countTable <- read.table(countFile, header=TRUE, row.names=1)
+phenoTable <- read.table(phenoFile, header=TRUE, row.names=1)
 
 # View part of the data/table
-  countTable[101:108, 1:5]
-  
+countTable[101:108, 1:5]
+
 # Define a strain-specific color for each sample, and add it as a supplementary column
-  phenoTable$color[phenoTable$strain == "Snf"] <- "orange"
-  phenoTable$color[phenoTable$strain == "WT"] <- "green"
-  colnames(phenoTable)
-  phenoTable
+phenoTable$color[phenoTable$strain == "Snf"] <- "orange"
+phenoTable$color[phenoTable$strain == "WT"] <- "green"
+colnames(phenoTable)
+head(phenoTable)
+tail(phenoTable)
+
 ```
 
 #### Exercice
@@ -145,6 +156,7 @@ Note that the created tables include column names as factor object. Reminder: a 
 
 <a href="javascript:sizeTbl2('block','ex1')">View solution</a>|<a href="javascript:sizeTbl2('none','ex1')">Hide solution</a>
 <div id="ex1"  style="overflow:hidden;display:none">
+
 ```{r, eval=FALSE}
   head(phenoTable)
   tail(phenoTable)
@@ -156,6 +168,7 @@ Note that the created tables include column names as factor object. Reminder: a 
 
 <a href="javascript:sizeTbl2('block','ex2')">View solution</a>|<a href="javascript:sizeTbl2('none','ex2')">Hide solution</a>
 <div id="ex2"  style="overflow:hidden;display:none">  
+
 ```{r, eval=FALSE}
   nb.samples <- ncol(countTable)
   print(nb.samples)
@@ -167,7 +180,8 @@ Note that the created tables include column names as factor object. Reminder: a 
 </div>
 <br>
 
-3. Check the number of replicates in each class using the *table* function. To better understand what you could do with this function, play with it (varying the parameters) with the following test table
+3. Check the number of replicates in each class using the *table* function. To better understand what you could do with this function, play with it (varying the parameters) with the following test table.
+
 ```{r, eval=FALSE}
   testTable <- matrix(c(sample(c("A", "B", "C", "D", "E"), replace=TRUE, 20),
                         sample(c("boy", "girl", "robot"), replace=TRUE, 20),
@@ -193,11 +207,12 @@ Note that the created tables include column names as factor object. Reminder: a 
 
 <a href="javascript:sizeTbl2('block','ex4')">View solution</a>|<a href="javascript:sizeTbl2('none','ex4')">Hide solution</a>
 <div id="ex4"  style="overflow:hidden;display:none">
+
 ```{r reads_per_sample_barplot, fig.width=8, fig.height=12}
-  barplot(colSums(countTable)/1000000, 
+barplot(colSums(countTable)/1000000, 
         main="Total number of reads per sample (million)",
         col=phenoTable$color, 
-#        names.arg = "", 
+        #        names.arg = "", 
         las=1,  horiz=TRUE,
         ylab="Samples", cex.names=0.5,
         xlab="Million counts")
@@ -225,6 +240,7 @@ summary(countTable[,1:4])
 ```
 
 Among the reference functions in **R**, *apply* (and its derivates) allow to repeated execution of a function to a serie of data, at a noteworthy higher speed tha using *for* loops. Note that, if working on a matrix/data frame, the *apply* function requires that you indicate if you want to apply the function to the rows (MARGIN=1) or to the columns (MARGIN=2). Some built-in functions already exist as *colMeans*, *colSums*, *rowMeans* and *rowSums*. Let's use apply to get the *summary* for every column of the count table. It produces a matrix as output that we transpose to obtain samples as rows and the statistics as columns, and move back to a *data.frame* object.
+
 ```{r stats_per_sample1, eval=FALSE}
 statsPerSample <- data.frame(t(apply(countTable, 2, summary)))
 head(statsPerSample)
@@ -245,7 +261,8 @@ Integrate some more columns to *statsPerSample*:
 <div id="ex5"  style="overflow:hidden;display:none">
 
 ```{r stats_per_sampleEx1, eval=FALSE}
-statsPerSample[c("perc10", "perc90", "perc95")] <- apply(countTable, 2, quantile, c(0.10, 0.90, 0.95)
+statsPerSample[c("perc10", "perc90", "perc95")] <- 
+  apply(countTable, 2, quantile, c(0.10, 0.90, 0.95))
 ```
 </div>
 <br>
@@ -264,18 +281,19 @@ statsPerSample$zeros <- apply(countTable==0, 2, sum)
 - the percentage these zeros represent.
 <a href="javascript:sizeTbl2('block','ex7')">View solution</a>|<a href="javascript:sizeTbl2('none','ex7')">Hide solution</a>
 <div id="ex7"  style="overflow:hidden;display:none">
+
 ```{r stats_per_sampleEx3, eval=FALSE}
 statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
 ```
+
 </div>
 <br>
 
 
 Finally, randomly choose some columns with the *sample* function and look at their statistics
+
 ```{r stats_per_sampleEx4, eval=FALSE}
-
 statsPerSample[sample(1:ncol(countTable), size = 10),]
-
 ```
 
 ### Distributions
@@ -295,6 +313,7 @@ hist(as.matrix(log2(countTable + epsilon)), breaks=100, col="blue", border="whit
 ```
 
 To get better insights into the distribution per sample, the *boxplot* offer a good perspective.
+
 ```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=10, fig.cap="Box plots of non-normalized log2(counts) per sample. "}
 boxplot(log2(countTable + epsilon), col=phenoTable$color, pch=".", 
         horizontal=TRUE, cex.axis=0.5,
@@ -302,6 +321,7 @@ boxplot(log2(countTable + epsilon), col=phenoTable$color, pch=".",
 ```
 
 Another way to get an intuition of the value distributions is to use the *plotDensity* function, which draws one density curve for each sample.
+
 ```{r log2_counts_densities_per_sample, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Densities of log2(counts). Each curve corresponds to one sample. "}
 # We will require one function from the affy package
 if(!require("affy")){
@@ -348,6 +368,7 @@ All genes from genome the *S. cerevisiae* where quantified. However only a fract
 
 <a href="javascript:sizeTbl2('block','ex5')">View solution</a>|<a href="javascript:sizeTbl2('none','ex5')">Hide solution</a>
 <div id="ex5"  style="overflow:hidden;display:none">
+
 ```{r null_counts_per_sample, fig.path="figures/schurch2016_", fig.width=6, fig.height=8, fig.cap="**Percentage of null counts per sample. **"}
 propNull <- apply(countTable, 2, function(x){return(mean(x==0)*100)} )
 print(head(propNull))
@@ -360,6 +381,7 @@ barplot(propNull, main="Percentage of null counts per sample",
 
 <a href="javascript:sizeTbl2('block','ex6')">View solution</a>|<a href="javascript:sizeTbl2('none','ex6')">Hide solution</a>
 <div id="ex6"  style="overflow:hidden;display:none">
+
 ```{r all_null_counts_genes, fig.path="figures/schurch2016_", fig.width=6, fig.height=8, fig.cap="**Percentage of null counts per sample. **"}
 length(rowSums(countTable) == 0)
 countTable <- countTable[rowSums(countTable) > 0,]
@@ -706,7 +728,7 @@ text(res.DESeq2$log2FoldChange[gn.selected],
 
 It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
 
-```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Barplot of the counts per sample fr a selected gene. "}
+```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=4, fig.cap="Barplot of the counts per sample fr a selected gene. "}
 gn.most.sign <- rownames(res.DESeq2)[1]
 gn.most.diff.val <- counts(dds.norm, normalized=T)[gn.most.sign,]
 barplot(gn.most.diff.val, col=col.pheno.selected, main=gn.most.sign, las=2, cex.names=0.5)
@@ -726,7 +748,7 @@ $$A_g = \frac{1}{2}(log2(\bar{x}_g,a) + log2(\bar{x}_g,b))$$
 ```{r DESEeq2_MA_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="MA plot. The abcsissa indicates the mean of normalized counts; the ordinate the log2(fold-change). "}
 # Draw a MA plot.
 # Genes with adjusted p-values below 1% are shown
-plotMA(res.DESeq2, colNonSig = "blue")
+plotMA(res.DESeq2, colNonSig = "blue", main="MA plot")
 abline(h=c(-1:1), col="red")
 ```
 
@@ -818,16 +840,13 @@ Using a loop, randomly select 10 times  2,5,10,15..45 samples from WT and Snf2 K
 
 
 ```{r save_results}
-# Create a directory to store the results that will be obtained below
-dir.results <- file.path(dir.snf2, "results")
-dir.create(dir.results, showWarnings = FALSE, recursive = TRUE)
 
 # Export the table with statistics per sample.
-write.table(stats.per.sample, file=file.path(dir.results, "stats_per_sample.tsv"),
+write.table(stats.per.sample, file=file.path(resultDir, "stats_per_sample.tsv"),
             quote=FALSE, sep="\t", col.names =NA, row.names = TRUE)
 
 # Export the DESeq2 result table
-DESeq2.table <- file.path(dir.results, "yeast_Snf2_vs_WT_DESeq2_diff.tsv")
+DESeq2.table <- file.path(resultDir, "yeast_Snf2_vs_WT_DESeq2_diff.tsv")
 write.table(res.DESeq2, file=DESeq2.table, col.names = NA, row.names = TRUE, sep="\t", quote = FALSE)
 
 

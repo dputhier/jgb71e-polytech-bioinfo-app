@@ -213,21 +213,27 @@ testTable <- data.frame(
   gender = sample(c("boy", "girl", "robot"), replace=TRUE, 20),
   yesno = sample(c("yes", "no"), replace=TRUE, 20))
 
-table(testTable$ABC)
-table(testTable$yesno)
-table(testTable[, c("ABC", "yesno")])
 ```
 
 <a href="javascript:sizeTbl2('block','ex3')">View solution</a>|<a href="javascript:sizeTbl2('none','ex3')">Hide solution</a>
 <div id="ex3"  style="overflow:hidden;display:none">  
 ```{r, eval=FALSE}
-  table(phenoTable)
+## Check the content of the testTable
+testTable
 
-  testTable
-  table(testTable)
-  table(testTable[,2])
-  table(testTable[,2],testTable[,3])
-  
+## Get stats about column content
+table(testTable)
+table(testTable[,2])
+table(testTable[,2],testTable[,3])
+
+## The same with column names instead of column numbers
+table(testTable$gender)
+table(testTable[, c("gender", "yesno")])
+
+## Check the number of samples per strain in the yeast count table
+table(phenoTable$strain)
+table(phenoTable)
+
 ```
 </div>
 <br>
@@ -237,7 +243,7 @@ table(testTable[, c("ABC", "yesno")])
 <a href="javascript:sizeTbl2('block','ex4')">View solution</a>|<a href="javascript:sizeTbl2('none','ex4')">Hide solution</a>
 <div id="ex4"  style="overflow:hidden;display:none">
 
-```{r reads_per_sample_barplot, fig.width=8, fig.height=12}
+```{r reads_per_sample_barplot, fig.width=8, fig.height=12, fig.cap="**Million reads per sample**. "}
 barplot(colSums(countTable)/1000000, 
         main="Total number of reads per sample (million)",
         col=phenoTable$color, 
@@ -320,11 +326,16 @@ statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
 <br>
 
 
-Finally, randomly choose some columns with the *sample* function and look at their statistics
+Finally, randomly choose (with the `sample()` function) 10 samples (rows) of the stats per sample table and look at their statistics.
 
 ```{r stats_per_sampleEx4, eval=FALSE}
 statsPerSample[sample(1:ncol(countTable), size = 10),]
+
+## We can nicely format the result for the report, using the knitr::kable function
+kable(statsPerSample[sample(1:ncol(countTable), size = 10),])
 ```
+
+
 
 ## Distributions
 
@@ -422,15 +433,23 @@ countTable <- countTable[rowSums(countTable) > 0,]
 
 
 ****************************************************************
-# Selecting samples randomly
+# Selecting random samples
 
-One of the question that will drive the analysis will be to define the impact of the number of sample on the analysis. 
+One of the questions that will drive the analysis will be to define the impact of the number of sample on the analysis. 
 
 The original study contained 48 replicates per genotype, what happens if we select a smaller number?
 
-Each attendee of this course select a given number  (e.g. 3,4,5,10,15,20, 35, 40, 45...) and adapt the code below run the analysis with that number of replicates per genotype. We will at the end then compare the results (number of genes, significance, ...).
+In a first time, we will analyse the full dataset with 48 samples per genotype. 
+
+In the second part of the tutorial, each attendee of this course will select a given number  (e.g. 3, 4, 5, 10, 15, 20, 35, 40, 45, ...) and adapt the code below run the analysis with that number of replicates per genotype. 
+
+We will at the end then compare the results (number of genes, significance, ...) between the full dataset analysis, and the analysis of sub-samples of varying sizes.
+
+We will already select here the subset of yeast samples for our sub-sampling analysis. 
 
 ```{r}
+## Select a subset of samples from each genotype for the sub-sampling analysis
+
 nb.replicates <- 10 # Each attendee chooses a number (3,4,5,10,15 or 20)
 
 samples.WT <- sample(1:48, size=nb.replicates, replace=FALSE)
@@ -462,15 +481,22 @@ if(!require("DESeq2")){
 library("DESeq2")
 ```
 
+## Analysis of the full dataset
+
+We will first analyse together the full dataset. 
+The analysis of subsets of samples will be done as an exercise. 
+
 ****************************************************************
-# Creating a DESeqDataSet dataset
+### Creating a DESeqDataSet dataset
 
 We will then create a **DESeqDataSet** using the **DESeqDataSetFromMatrix** function. Get some help about the **DESeqDataSet** and have a look at some important accessor methods: **counts**, **conditions**, **estimateSizeFactors**, **sizeFactors**, **estimateDispersions** and **nbinomTest**.
 
 
 ```{r create DESeqDataSet object}
 # Use the DESeqDataSetFromMatrix to create a DESeqDataSet object
-dds0 <- DESeqDataSetFromMatrix(countData = countTable[,selected.samples ], colData = phenoTable[selected.samples,], design = ~ strain)
+dds0 <- DESeqDataSetFromMatrix(countData = countTable, colData = phenoTable, design = ~ strain)
+
+## Check the general properties of the DESeq dataset
 print(dds0)
 
 # What kind of object is it ?
@@ -493,12 +519,16 @@ The normalization procedure (RLE) is implemented through the **estimateSizeFacto
 
 ## How is the scaling factor computed ?
 
-Given a matrix  with $p$ columns (samples) and $n$ rows (genes) this function estimates the size factors as follows: Each column element is divided by the **geometric means** of the rows. For each sample, the **median** (or, if requested, another location estimator) **of these ratios** (skipping the genes with a geometric mean of zero) is used as the size factor for this column.
+<font color="orange">**Note: ** </font> this section is somewhat technical. If the underlying mathematics seem a bit too complicated do not worry, the next sections will be practice-oriented. 
+
+Given a matrix  with $p$ columns (samples) and $n$ rows (genes) this function estimates the size factors as follows.
+
+- Each column element is divided by the **geometric means** of the rows. 
+- For each sample, the **median** (or, if requested, another location estimator) **of these ratios** (skipping the genes with a geometric mean of zero) is used as the size factor for this column.
 
 The scaling factor for sample $j$ is thus obtained as:
 
-
-  $$sf_{j} = median(\frac{K_{g,j}}{(\prod_{j=1}^p K_{g,j})^{1/p}}) $$
+$$sf_{j} = median(\frac{K_{g,j}}{(\prod_{j=1}^p K_{g,j})^{1/p}})$$
 
 
 ```{r}
@@ -555,11 +585,14 @@ plotDensity(log2(counts(dds.norm)+epsilon),  col=col.pheno.selected,
             xlab="log2(counts)", cex.lab=0.7, panel.first=grid()) 
 plotDensity(log2(counts(dds.norm, normalized=TRUE)+epsilon), col=col.pheno.selected, 
             xlab="log2(normalized counts)", cex.lab=0.7, panel.first=grid()) 
-
+# Restore default parameters
+par(mfrow=c(1,1), cex.lab=1)
 ```
 
 ****************************************************************
 # Count variance is related to mean
+
+In the very first papers about RNA-seq, the authors assumed that the  counts would  follow a Poisson distribution, with a specific mean for each gene. However, this assumption has been revised because it was not supported by a simple analysis of the variance across samples. 
 
 As you can see from the following plot the relationship between variance and mean is not strictly linear. This can be shown by the poor fit that is obtained using a linear regression. 
 

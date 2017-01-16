@@ -118,12 +118,9 @@ url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_r
 countFile <- "counts.txt"
 phenoFile <- "expDesign.txt"
 
-## Local paths: create a directory to store the data and results
+## Local paths: create a directory to store the data
 dataDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/data")
 dir.create(dataDir, showWarnings = FALSE, recursive = TRUE)
-resultDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/results")
-dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
-
 
 # Download the data files unless they are already here
 setwd(dataDir)
@@ -689,26 +686,26 @@ Now that a negative binomial model has been fitted for each gene, the **nbinomWa
 
 ```{r DESeq2_Pvalue_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Histogram of the p-values reported by DESeq2. "}
 alpha <- 0.0001
-wald.test <- nbinomWaldTest(dds.disp)
-res.DESeq2 <- results(wald.test, alpha=alpha, pAdjustMethod="BH")
+waldTestResult <- nbinomWaldTest(dds.disp)
+resultDESeq2 <- results(waldTestResult, alpha=alpha, pAdjustMethod="BH")
 
 # What is the object returned by nbinomTest()
-class(res.DESeq2)
-is(res.DESeq2) # a data.frame
-slotNames(res.DESeq2)
-head(res.DESeq2)
+class(resultDESeq2)
+is(resultDESeq2) # a data.frame
+slotNames(resultDESeq2)
+head(resultDESeq2)
 
 # The column names of the data.frame
 # Note the column padj 
 # contains FDR values (computed Benjamini–Hochberg procedure)
-colnames(res.DESeq2)
+colnames(resultDESeq2)
 
 # Order the table by decreasing p-valuer
-res.DESeq2 <- res.DESeq2[order(res.DESeq2$padj),]
-head(res.DESeq2)
+resultDESeq2 <- resultDESeq2[order(resultDESeq2$padj),]
+head(resultDESeq2)
 
 # Draw an histogram of the p-values
-hist(res.DESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="DESeq2 P-value", ylab="Number of genes")
+hist(resultDESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="DESeq2 P-value", ylab="Number of genes")
 ```
 
 # Volcano plot
@@ -716,18 +713,18 @@ hist(res.DESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution",
 
 ```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Volcano plot of DESeq2 results. Abcsissa: log2(fold-change). Ordinate: significance ($-log_{10}(P-value)$). "}
 alpha <- 0.01 # Threshold on the adjusted p-value
-cols <- densCols(res.DESeq2$log2FoldChange, -log10(res.DESeq2$pvalue))
-plot(res.DESeq2$log2FoldChange, -log10(res.DESeq2$padj), col=cols, panel.first=grid(),
+cols <- densCols(resultDESeq2$log2FoldChange, -log10(resultDESeq2$pvalue))
+plot(resultDESeq2$log2FoldChange, -log10(resultDESeq2$padj), col=cols, panel.first=grid(),
      main="Volcano plot", xlab="Effect size: log2(fold-change)", ylab="-log10(adjusted p-value)",
      pch=20, cex=0.6)
 abline(v=0)
 abline(v=c(-1,1), col="brown")
 abline(h=-log10(alpha), col="brown")
 
-gn.selected <- abs(res.DESeq2$log2FoldChange) > 2 & res.DESeq2$padj < alpha 
-text(res.DESeq2$log2FoldChange[gn.selected],
-     -log10(res.DESeq2$padj)[gn.selected],
-     lab=rownames(res.DESeq2)[gn.selected ], cex=0.4)
+gn.selected <- abs(resultDESeq2$log2FoldChange) > 2 & resultDESeq2$padj < alpha 
+text(resultDESeq2$log2FoldChange[gn.selected],
+     -log10(resultDESeq2$padj)[gn.selected],
+     lab=rownames(resultDESeq2)[gn.selected ], cex=0.4)
 
 ```
 
@@ -736,7 +733,7 @@ text(res.DESeq2$log2FoldChange[gn.selected],
 It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
 
 ```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=4, fig.cap="Barplot of the counts per sample fr a selected gene. "}
-gn.most.sign <- rownames(res.DESeq2)[1]
+gn.most.sign <- rownames(resultDESeq2)[1]
 gn.most.diff.val <- counts(dds.norm, normalized=T)[gn.most.sign,]
 barplot(gn.most.diff.val, col=col.pheno.selected, main=gn.most.sign, las=2, cex.names=0.5)
 ```
@@ -755,7 +752,7 @@ $$A_g = \frac{1}{2}(log2(\bar{x}_g,a) + log2(\bar{x}_g,b))$$
 ```{r DESEeq2_MA_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="MA plot. The abcsissa indicates the mean of normalized counts; the ordinate the log2(fold-change). "}
 # Draw a MA plot.
 # Genes with adjusted p-values below 1% are shown
-plotMA(res.DESeq2, colNonSig = "blue", main="MA plot")
+plotMA(resultDESeq2, colNonSig = "blue", main="MA plot")
 abline(h=c(-1:1), col="red")
 ```
 
@@ -768,7 +765,7 @@ To ensure that the selected genes distinguish well between "treated"" and "untre
 
 ```{r signif_genes_count_heatmap, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Heatmap of the gebes deckared significant with DESeq2. Rows correspond to genes, columns to samples.  "}
 # We select gene names based on FDR (1%)
-gene.kept <- rownames(res.DESeq2)[res.DESeq2$padj <= alpha & !is.na(res.DESeq2$padj)]
+gene.kept <- rownames(resultDESeq2)[resultDESeq2$padj <= alpha & !is.na(resultDESeq2$padj)]
 
 # We retrieve the normalized counts for gene of interest
 countTable.kept <- log2(countTable + epsilon)[gene.kept, ]
@@ -802,8 +799,8 @@ We will now perform functional enrichment using the list of induced genes. This 
 ```{r functional_enrichment_gProfileR}
 library(gProfileR)
 
-res.DESeq2.df <- na.omit(data.frame(res.DESeq2))
-induced.sign <- rownames(res.DESeq2.df)[res.DESeq2.df$log2FoldChange >= 2 &  res.DESeq2.df$padj < alpha]
+resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
+induced.sign <- rownames(resultDESeq2.df)[resultDESeq2.df$log2FoldChange >= 2 &  resultDESeq2.df$padj < alpha]
 # head(induced.sign)
 # names(term.induced)
 
@@ -827,8 +824,8 @@ And now using the list of repressed genes.
 ```{r}
 
 
-res.DESeq2.df <- na.omit(data.frame(res.DESeq2))
-repressed.sign <- rownames(res.DESeq2.df)[res.DESeq2.df$log2FoldChange <= -2 &  res.DESeq2.df$padj < alpha]
+resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
+repressed.sign <- rownames(resultDESeq2.df)[resultDESeq2.df$log2FoldChange <= -2 &  resultDESeq2.df$padj < alpha]
 head(repressed.sign)
 
 term.repressed <- gprofiler(query=repressed.sign, organism="scerevisiae")
@@ -846,15 +843,22 @@ Using a loop, randomly select 10 times  2,5,10,15..45 samples from WT and Snf2 K
 
 
 
-```{r save_results}
+```{r save_results, eval=FALSE}
+
+## Local paths: create a directory to store the results
+resultDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/results")
+dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
+setwd(resultDir)
+
+
 
 # Export the table with statistics per sample.
-write.table(stats.per.sample, file=file.path(resultDir, "stats_per_sample.tsv"),
+write.table(statsPerSample, file=file.path(resultDir, "stats_per_sample.tsv"),
             quote=FALSE, sep="\t", col.names =NA, row.names = TRUE)
 
 # Export the DESeq2 result table
-DESeq2.table <- file.path(resultDir, "yeast_Snf2_vs_WT_DESeq2_diff.tsv")
-write.table(res.DESeq2, file=DESeq2.table, col.names = NA, row.names = TRUE, sep="\t", quote = FALSE)
+DESeq2Table <- file.path(resultDir, "yeast_Snf2_vs_WT_DESeq2_diff.tsv")
+write.table(resultDESeq2, file=DESeq2Table, col.names = NA, row.names = TRUE, sep="\t", quote = FALSE)
 
 
 ```

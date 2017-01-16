@@ -1,0 +1,876 @@
+---
+title: "RNA-Seq - differential expression using DESeq2"
+author: 'N. Terrapon (adapted from D. Puthier, Hugo Varet, Julie Auberta and J. van
+  Helden) '
+date: 'First version: 2016-12-10; Last update: `r Sys.Date()`'
+output:
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    self_contained: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float: no
+  beamer_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
+    toc: yes
+  ioslides_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_md: no
+    slide_level: 2
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+  slidy_presentation:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    highlight: tango
+    incremental: no
+    keep_md: no
+    self_contained: yes
+    slide_level: 2
+    smaller: yes
+    theme: cerulean
+    toc: yes
+    widescreen: yes
+font-import: http://fonts.googleapis.com/css?family=Risque
+font-family: Garamond
+transition: linear
+---
+
+
+
+<script language="JavaScript" type="text/javascript">
+  <!--
+      function sizeTbl2(h,i) {
+      var tbl = document.getElementById(i);
+      tbl.style.display = h;
+      }
+      // -->
+</script>
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = FALSE, message = FALSE, warning = FALSE,
+                      comment = "")
+
+# Options to display pretty numbers
+library(knitr)
+knit_hooks$set(inline = function(x) {
+  prettyNum(x, big.mark=" ")
+})
+options(scipen = 6, digits = 3)
+knitr::asis_output("\\footnotesize")
+
+# Load gProfileR (install first if not done yet)
+if (!require(gProfileR)) {
+  install.packages("gProfileR")
+}
+library(gProfileR)
+
+```
+
+
+****************************************************************
+# The Snf2 dataset
+
+
+The RNA-Seq dataset we will use in this practical has been produced by [Gierliński *et al*, 2015)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4754627/pdf/btv425.pdf) and [(Schurch *et al*, 2016)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4878611/pdf/839.pdf)). The dataset is composed of 48 WT yeast samples vs 48 Snf2 knock-out mutant cell line. The prepared RNA-Seq libraries (unstranded) were pooled and sequenced on seven lanes of a single flow-cell on an Illumina HiSeq 2000 resulting in a total of 1 billion 50-bp single-end reads across the 96 samples. RNA-Seq reads have been cleaned, mapped and counted to generated a count data matrix containing 7126 rows/genes. The primary objective of this study was to check whether the observed gene read counts distribution where consistent with theorical models (e.g. negative binomial). More information can be obtained in the original paper.
+ 
+
+****************************************************************
+# Loading the dataset
+
+**R** enables to download data directly from the Web with the *download.file* function. After, we begin with some verification steps.
+
+The expression matrix and phenotypic information will be loaded into **R** using the *read.table* function. Both table will be converted into a data.frame object when loaded into R.
+- The *countTable* object should contain counts for each gene (row) and each sample (column).
+- The *phenoTable* object should contain the designation of each genotype, that is 48 biological replicates of the wild type strain (**WT**) and the **Snf2** mutant.
+
+Note that the created tables include column names as factor object. Reminder: a factor is a vector with levels (categories), which permits an efficient storage and indexing, but can in some cases lead to misleading effects. To circumvent this, we will sometimes have to convert the factor to a vector, with the R command *as.vector()*.
+
+```{r load_data, eval=TRUE}
+# List of url and file names
+url <- "http://jvanheld.github.io/stats_avec_RStudio_EBA/practicals/yeast_2x48_replicates/data"
+countFile <- "counts.txt"
+phenoFile <- "expDesign.txt"
+
+## Local paths: create a directory to store the data
+dataDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/data")
+dir.create(dataDir, showWarnings = FALSE, recursive = TRUE)
+
+# Download the data files unless they are already here
+setwd(dataDir)
+
+if(!file.exists(countFile))
+  download.file(url = file.path(url,countFile), destfile = countFile )
+
+if(!file.exists(phenoFile))
+  download.file(url = file.path(url,phenoFile), destfile = phenoFile )
+
+# Load the count table
+countTable <- read.table(countFile, header=TRUE, row.names=1)
+phenoTable <- read.table(phenoFile, header=TRUE, row.names=1)
+
+# View part of the data/table
+countTable[101:108, 1:5]
+
+# Define a strain-specific color for each sample, and add it as a supplementary column
+strainColor <- c("WT"="green","Snf2"="orange") # Choose one color per strain
+## Define the column of each sample according to its genotype
+phenoTable$color[phenoTable$strain == "Snf"] <- strainColor["Snf2"]
+phenoTable$color[phenoTable$strain == "WT"] <- strainColor["WT"]
+colnames(phenoTable)
+head(phenoTable)
+tail(phenoTable)
+
+```
+
+
+
+#### Exercice
+<div class="exo">
+1. Find the commands to visualize the first and last line of a data.frame object (clue: similar to bash commands)
+
+<a href="javascript:sizeTbl2('block','ex1')">View solution</a>|<a href="javascript:sizeTbl2('none','ex1')">Hide solution</a>
+<div id="ex1"  style="overflow:hidden;display:none">
+
+```{r, eval=FALSE}
+  head(phenoTable)
+  tail(phenoTable)
+```
+
+</div>
+<br>
+
+2. Check the completeness (dimensions) of the data (tables)
+
+<a href="javascript:sizeTbl2('block','ex2')">View solution</a>|<a href="javascript:sizeTbl2('none','ex2')">Hide solution</a>
+<div id="ex2"  style="overflow:hidden;display:none">  
+
+
+```{r, eval=FALSE}
+nb.samples <- ncol(countTable)
+print(nb.samples)
+nb_genes <- nrow(countTable)
+print(nb_genes)
+
+dim(phenoTable)
+```
+</div>
+<br>
+
+3. Check the number of replicates in each class using the *table* function. To better understand what you could do with this function, play with it (varying the parameters) with the following test table.
+
+```{r, eval=FALSE}
+  testTable <- matrix(c(sample(c("A", "B", "C", "D", "E"), replace=TRUE, 20),
+                        sample(c("boy", "girl", "robot"), replace=TRUE, 20),
+                        sample(c("yes", "no"), replace=TRUE, 20) ),
+                      20,3)
+```
+
+<a href="javascript:sizeTbl2('block','ex3')">View solution</a>|<a href="javascript:sizeTbl2('none','ex3')">Hide solution</a>
+<div id="ex3"  style="overflow:hidden;display:none">  
+```{r, eval=FALSE}
+  table(phenoTable)
+
+  testTable
+  table(testTable)
+  table(testTable[,2])
+  table(testTable[,2],testTable[,3])
+  
+```
+</div>
+<br>
+
+4. Draw a barplot showing the total number of reads in each sample (clue: use *colSums* function) with sample colored (according to the color column in *phenoTable*). What can you say from this diagram?
+
+<a href="javascript:sizeTbl2('block','ex4')">View solution</a>|<a href="javascript:sizeTbl2('none','ex4')">Hide solution</a>
+<div id="ex4"  style="overflow:hidden;display:none">
+
+```{r reads_per_sample_barplot, fig.width=8, fig.height=12}
+barplot(colSums(countTable)/1000000, 
+        main="Total number of reads per sample (million)",
+        col=phenoTable$color, 
+        #        names.arg = "", 
+        las=1,  horiz=TRUE,
+        ylab="Samples", cex.names=0.5,
+        xlab="Million counts")
+```
+
+The barplot indicates the library sizes (total number of reads) for each sample. We can see important differences, ranging from `r min(colSums(countTable)/1000000)` to `r max(colSums(countTable)/1000000)` million reads per sample. 
+
+This has important consequences: any read count should be interpreted relative to the sequencing depth of the corresponding sample. We will thus need to **normalise** the counts. Consequently, it makes not much sense to compute summary statistics per gene (mean counts, standard deviation, ...) before having normalized the data. 
+</div>
+<br>
+</div>
+
+
+****************************************************************
+# Descriptive statistics
+
+## Basic statistics
+
+Before going further in the analysis, we will compute some descriptive statistics on the dataset.
+At this stage we only compute statistics per sample, since statistics per gene are meaningful only after library-wise normalization of the counts. 
+
+```{r stats_per_sample, eval=FALSE}
+# Min, Max, median (...). 
+# Here on the first 4 samples
+summary(countTable[,1:4])
+```
+
+Among the reference functions in **R**, *apply* (and its derivates) allow to repeated execution of a function to a serie of data, at a noteworthy higher speed tha using *for* loops. Note that, if working on a matrix/data frame, the *apply* function requires that you indicate if you want to apply the function to the rows (MARGIN=1) or to the columns (MARGIN=2). Some built-in functions already exist as *colMeans*, *colSums*, *rowMeans* and *rowSums*. Let's use apply to get the *summary* for every column of the count table. It produces a matrix as output that we transpose to obtain samples as rows and the statistics as columns, and move back to a *data.frame* object.
+
+```{r stats_per_sample1, eval=FALSE}
+statsPerSample <- data.frame(t(apply(countTable, 2, summary)))
+head(statsPerSample)
+```
+
+We can now add some columns to the stats per sample. For example, here are the library sums and the 5% quantile.
+
+```{r stats_per_sample2, eval=FALSE}
+statsPerSample$libsum <- colSums(countTable) # library sums
+statsPerSample$perc05 <- apply(countTable, 2, quantile, probs=0.05)
+```
+
+#### Exercice 
+Integrate some more columns to *statsPerSample*:
+- the 10%, 90% and 95% quantile;
+
+<a href="javascript:sizeTbl2('block','ex5')">View solution</a>|<a href="javascript:sizeTbl2('none','ex5')">Hide solution</a>
+<div id="ex5"  style="overflow:hidden;display:none">
+
+```{r stats_per_sampleEx1, eval=FALSE}
+statsPerSample[c("perc10", "perc90", "perc95")] <- 
+  apply(countTable, 2, quantile, c(0.10, 0.90, 0.95))
+```
+</div>
+<br>
+
+- the number of zeros for each column;
+
+<a href="javascript:sizeTbl2('block','ex6')">View solution</a>|<a href="javascript:sizeTbl2('none','ex6')">Hide solution</a>
+<div id="ex6"  style="overflow:hidden;display:none">
+
+```{r stats_per_sampleEx2, eval=FALSE}
+statsPerSample$zeros <- apply(countTable==0, 2, sum)
+```
+</div>
+<br>
+
+- the percentage these zeros represent.
+<a href="javascript:sizeTbl2('block','ex7')">View solution</a>|<a href="javascript:sizeTbl2('none','ex7')">Hide solution</a>
+<div id="ex7"  style="overflow:hidden;display:none">
+
+```{r stats_per_sampleEx3, eval=FALSE}
+statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
+```
+
+</div>
+<br>
+
+
+Finally, randomly choose some columns with the *sample* function and look at their statistics
+
+```{r stats_per_sampleEx4, eval=FALSE}
+statsPerSample[sample(1:ncol(countTable), size = 10),]
+```
+
+## Distributions
+
+The summary only displays a few milestone values (mean, median, quartiles). In order to get a better intuition of the data, we can draw an histogram of all values.
+
+```{r data_distrib_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Histogram of raw counts. The scale is determined by the gene with the highest count, which is apparently an outlier. "}
+hist(as.matrix(countTable), col="blue", border="white")
+```
+
+The histogram is not very informative so far, apparently due to the presence of a few very high count values, that impose a very large scale on the $X$ axis. We can use a logarithmic transformation to improve the readability. Note that we will add pseudo counts to avoid problems with "zero" counts observed for some genes in some samples.
+
+```{r log2_counts_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5}
+epsilon <- 1 # pseudo-count to avoid problems with log(0)
+hist(as.matrix(log2(countTable + epsilon)), breaks=100, col="blue", border="white",
+     main="Histogram of log2-transformed counts per gene", xlab="log2(counts)", ylab="Number of genes")
+```
+
+To get better insights into the distribution per sample, the *boxplot* offer a good perspective.
+
+```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=10, fig.cap="Box plots of non-normalized log2(counts) per sample. "}
+boxplot(log2(countTable + epsilon), col=phenoTable$color, pch=".", 
+        horizontal=TRUE, cex.axis=0.5,
+        las=1, ylab="Samples", xlab="log2(Counts +1)")
+```
+
+Another way to get an intuition of the value distributions is to use the *plotDensity* function, which draws one density curve for each sample.
+
+```{r log2_counts_densities_per_sample, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Densities of log2(counts). Each curve corresponds to one sample. "}
+# We will require one function from the affy package
+if(!require("affy")){
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("affy")  
+}
+library(affy)
+plotDensity(log2(countTable + epsilon), lty=1, col=phenoTable$color, lwd=2)
+grid()
+legend("topright", legend=names(strainColor), col=strainColor, lwd=2)
+
+```
+
+**Beware**: the R function *plotDensity* does not display the actual distribution of your values, but a polynomial fit. The representation thus generally looks smoother than the actual data. It is important to realize that, in some particular cases, the fit can lead to extrapolated values which can be misleading.
+
+## Scatter plots
+
+Let's have a look at the scatter plots using the *pairs* function. We will only represent 10 randomly selected samples.
+
+```{r scatter_plot_some_samples, fig.path="figures/schurch2016_", fig.width=8, fig.height=8, fig.cap="**Scatter plot of log2-counts for a random selection of samples. **"}
+# Define a function to draw a scatter plot for a pair of variables (samples) with density colors
+plotFun <- function(x,y){ 
+  dns <- densCols(x,y); 
+  points(x,y, col=dns, pch=".", panel.first=grid());  
+#  abline(a=0, b=1, col="brown")
+  }
+
+# Plot the scatter plot for a few pairs of variables selected at random
+set.seed(123) # forces the random number generator to produce fixed results
+pairs(log2(countTable[,sample(ncol(countTable),5)] + epsilon), 
+      panel=plotFun, lower.panel = NULL)
+```
+
+The command *pairs* draws a scatter plot for each pair of columns of the input dataset. The plot shows a fairly good reproducibility between samples of the same type (WT or KO, respectively): all points are aligned along te diagonal, with a relatively wider dispersion at the bottom, corresponding to small number fluctuations. 
+
+In contrast, on all the plots comparing a WT and a KO sample, we can see some points (genes) discarding from the diagonal.
+
+
+****************************************************************
+# Eliminating undetected genes
+
+All genes from genome the *S. cerevisiae* where quantified. However only a fraction of them where expressed and some of them where to weakly expressed to be detected in any of the sample. As a result the count table may contain rows with only zero values (null counts). 
+ 
+<div class="exo">
+- Draw a barplot of the percentages of genes having null counts per sample.
+
+<a href="javascript:sizeTbl2('block','ex5')">View solution</a>|<a href="javascript:sizeTbl2('none','ex5')">Hide solution</a>
+<div id="ex5"  style="overflow:hidden;display:none">
+
+```{r null_counts_per_sample, fig.path="figures/schurch2016_", fig.width=6, fig.height=8, fig.cap="**Percentage of null counts per sample. **"}
+propNull <- apply(countTable, 2, function(x){return(mean(x==0)*100)} )
+print(head(propNull))
+barplot(propNull, main="Percentage of null counts per sample", 
+        horiz=TRUE, cex.names=0.5, las=1, 
+        col=phenoTable$color, ylab='Samples', xlab='% of null counts')
+```
+
+- Some genes were not detected (0-count expression) in any of the samples. Count how much, and delete them from the **countTable** data frame.
+
+<a href="javascript:sizeTbl2('block','ex6')">View solution</a>|<a href="javascript:sizeTbl2('none','ex6')">Hide solution</a>
+<div id="ex6"  style="overflow:hidden;display:none">
+
+```{r all_null_counts_genes, fig.path="figures/schurch2016_", fig.width=6, fig.height=8, fig.cap="**Percentage of null counts per sample. **"}
+length(rowSums(countTable) == 0)
+countTable <- countTable[rowSums(countTable) > 0,]
+```
+</div>
+
+
+****************************************************************
+# Selecting samples randomly
+
+One of the question that will drive the analysis will be to define the impact of the number of sample on the analysis. 
+
+The original study contained 48 replicates per genotype, what happens if we select a smaller number?
+
+Each attendee of this course select a given number  (e.g. 3,4,5,10,15,20, 35, 40, 45...) and adapt the code below run the analysis with that number of replicates per genotype. We will at the end then compare the results (number of genes, significance, ...).
+
+```{r}
+nb.replicates <- 10 # Each attendee chooses a number (3,4,5,10,15 or 20)
+
+samples.WT <- sample(1:48, size=nb.replicates, replace=FALSE)
+
+# Random sampling of the Snf2 replicates (columns 49 to 96)
+samples.Snf2 <- sample(49:96, size=nb.replicates, replace=FALSE)
+
+selected.samples <- c(samples.WT, samples.Snf2)
+
+# Don't forget to update colors
+col.pheno.selected <- phenoTable$color[selected.samples]
+```
+
+
+****************************************************************
+# Differential analysis with DESeq2
+
+In this section we will search for genes whose expression is affected by the genetic invalidation. You will first need to install the **DESeq2** bioconductor library then load it.
+
+```{r require_DESeq2}
+# Install the library if needed then load it
+if(!require("DESeq2")){
+  install.packages("lazyeval")
+  install.packages("ggplot2")
+  
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("DESeq2")
+}
+library("DESeq2")
+```
+
+****************************************************************
+# Creating a DESeqDataSet dataset
+
+We will then create a **DESeqDataSet** using the **DESeqDataSetFromMatrix** function. Get some help about the **DESeqDataSet** and have a look at some important accessor methods: **counts**, **conditions**, **estimateSizeFactors**, **sizeFactors**, **estimateDispersions** and **nbinomTest**.
+
+
+```{r create DESeqDataSet object}
+# Use the DESeqDataSetFromMatrix to create a DESeqDataSet object
+dds0 <- DESeqDataSetFromMatrix(countData = countTable[,selected.samples ], colData = phenoTable[selected.samples,], design = ~ strain)
+print(dds0)
+
+# What kind of object is it ?
+is(dds0)
+isS4(dds0)
+
+# What does it contain ?
+# The list of slot names
+slotNames(dds0)
+
+# Get some help about the "CountDataSet" class.
+# NOT RUN
+#?"DESeqDataSet-class"
+```
+
+****************************************************************
+# Normalization
+
+The normalization procedure (RLE) is implemented through the **estimateSizeFactors** function. 
+
+## How is the scaling factor computed ?
+
+Given a matrix  with $p$ columns (samples) and $n$ rows (genes) this function estimates the size factors as follows: Each column element is divided by the **geometric means** of the rows. For each sample, the **median** (or, if requested, another location estimator) **of these ratios** (skipping the genes with a geometric mean of zero) is used as the size factor for this column.
+
+The scaling factor for sample $j$ is thus obtained as:
+
+
+  $$sf_{j} = median(\frac{K_{g,j}}{(\prod_{j=1}^p K_{g,j})^{1/p}}) $$
+
+
+```{r}
+# Let's implement such a function
+# cds is a countDataset
+estimSf <- function (cds){
+    # Get the count matrix
+    cts <- counts(cds)
+    
+    # Compute the geometric mean
+    geomMean <- function(x) prod(x)^(1/length(x))
+
+    # Compute the geometric mean over the line
+    gm.mean  <-  apply(cts, 1, geomMean)
+    
+    # Zero values are set to NA (avoid subsequentcdsdivision by 0)
+    gm.mean[gm.mean == 0] <- NA
+    
+    # Divide each line by its corresponding geometric mean
+    # sweep(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...)
+    # MARGIN: 1 or 2 (line or columns)
+    # STATS: a vector of length nrow(x) or ncol(x), depending on MARGIN
+    # FUN: the function to be applied
+    cts <- sweep(cts, 1, gm.mean, FUN="/")
+    
+    # Compute the median over the columns
+    med <- apply(cts, 2, median, na.rm=TRUE)
+    
+    # Return the scaling factor
+    return(med)
+}
+```
+
+
+Now, check that the results obtained with our function are the same as those produced by DESeq. The method associated with normalization for the "CountDataSet" class is **estimateSizeFactors**.
+
+
+```{r before_vs_after_normalisation, fig.path="figures/schurch2016_", fig.width=8, fig.height=8, fig.cap="**Impact of the count normalization. ** "}
+# Normalizing using the method for an object of class"CountDataSet" 
+dds.norm <-  estimateSizeFactors(dds0)
+sizeFactors(dds.norm)
+
+# Now get the scaling factor with our homemade function.cds.norm
+head(estimSf(dds0)) 
+all(round(estimSf(dds0),6) == round(sizeFactors(dds.norm), 6))
+
+# Checking the normalization
+par(mfrow=c(2,2),cex.lab=0.7)
+boxplot(log2(counts(dds.norm)+epsilon),  col=col.pheno.selected, cex.axis=0.7, 
+        las=1, xlab="log2(counts)", horizontal=TRUE, main="Raw counts")
+boxplot(log2(counts(dds.norm, normalized=TRUE)+epsilon),  col=col.pheno.selected, cex.axis=0.7, 
+        las=1, xlab="log2(normalized counts)", horizontal=TRUE, main="Normalized counts") 
+plotDensity(log2(counts(dds.norm)+epsilon),  col=col.pheno.selected, 
+            xlab="log2(counts)", cex.lab=0.7, panel.first=grid()) 
+plotDensity(log2(counts(dds.norm, normalized=TRUE)+epsilon), col=col.pheno.selected, 
+            xlab="log2(normalized counts)", cex.lab=0.7, panel.first=grid()) 
+
+```
+
+****************************************************************
+# Count variance is related to mean
+
+As you can see from the following plot the relationship between variance and mean is not strictly linear. This can be shown by the poor fit that is obtained using a linear regression. 
+
+```{r warning=FALSE}
+# Computing mean and variance
+norm.counts <- counts(dds.norm, normalized=TRUE)
+mean.counts <- rowMeans(norm.counts)
+variance.counts <- apply(norm.counts, 1, var)
+
+# sum(mean.counts==0) # Number of completely undetected genes
+
+norm.counts.stats <- data.frame(
+  min=apply(norm.counts, 2, min),
+  mean=apply(norm.counts, 2, mean),
+  median=apply(norm.counts, 2, median),
+  max=apply(norm.counts, 2, max),
+  zeros=apply(norm.counts==0, 2, sum),
+  percent.zeros=100*apply(norm.counts==0, 2, sum)/nrow(norm.counts),
+  perc05=apply(norm.counts, 2, quantile, 0.05),
+  perc10=apply(norm.counts, 2, quantile, 0.10),
+  perc90=apply(norm.counts, 2, quantile, 0.90),
+  perc95=apply(norm.counts, 2, quantile, 0.95)
+)
+
+kable(norm.counts.stats)
+
+```
+
+
+```{r mean_variance_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=7, fig.cap="**Figure: variance/mean plot. ** The brown line highlights $x=y$, which corresponds to the expected relationship between mean and variance for a Poisson distribution. "}
+# Mean and variance relationship
+mean.var.col <- densCols(x=log2(mean.counts), y=log2(variance.counts))
+plot(x=log2(mean.counts), y=log2(variance.counts), pch=16, cex=0.5, 
+     col=mean.var.col, main="Mean-variance relationship",
+     xlab="Mean log2(normalized counts) per gene",
+     ylab="Variance of log2(normalized counts)",
+     panel.first = grid())
+abline(a=0, b=1, col="brown")
+
+```
+
+
+****************************************************************
+# Modeling read counts
+
+Let us imagine that we would produce a lot of RNA-Seq experiments from the same samples (technical replicates). For each gene $g$ the measured read counts would be expected to vary rather slighlty around the expected mean and would be probably well modeled using a Poisson distribution. However, when working with biological replicates more variations are intrinsically expected. Indeed,  the measured expression values for each genes are expected to fluctuate more importantly, due to the combination of biological and technical factors: inter-individual variations in gene regulation, sample purity, cell-synchronization issues or reponses to environment (e.g. heat-shock). 
+
+The Poisson distribution has only one parameter indicating its expected mean : $\lambda$. The variance of the distribution equals its mean $\lambda$. Thus in most cases, the Poisson distribution is not expected to fit very well with the count distribution in biological replicates, since we expect some over-dispersion (greater variability) due to biological noise.
+
+As a consequence, when working with RNA-Seq data, many of the current approaches for differential expression call rely on an alternative distribution: the *negative binomial*  (note that this holds true also for other -Seq approaches, e.g. ChIP-Seq with replicates).  
+
+## What is the negative binomial ?
+
+The negative binomial distribution is a discrete distribution that give us the probability of observing $x$ failures before a target number of succes $n$ is obtained. As we will see later the negative binomial can also be used to model over-dispersed data (in this case this overdispersion is relative to the poisson model). 
+
+
+## The probability of $x$ failures before $n$ success
+
+First, given a Bernouilli trial with a probability $p$ of success, the **negative binomial** distribution describes the probability of observing $x$ failures before a target number of successes $n$ is reached. In this case the parameters of the distribution will thus be $p$, $n$ (in **dnbinom** function of R, $n$ and $p$ are denoted by arguments **size** and **prob** respectively). 
+
+$$P_{NegBin}(x; n, p) = \binom{x+n-1}{x}\cdot p^n \cdot (1-p)^x = C^{x}_{x+n-1}\cdot p^n \cdot (1-p)^x $$
+
+In this formula, $p^n$ denotes the probability to observe $n$ successes, $(1-p)^x$ the probability of $x$ failures, and the binomial coefficient $C^{x}_{x+n-1}$ indicates the number of possible ways to dispose $x$ failures among the $x+n-1$ trials that precede the last one (the problem statement imposes for the last trial to be a success).
+
+The negative binomial distribution has expected value $n\frac{q}{p}$ and variance $n\frac{q}{p^2}$. Some examples of using this distribution in R are provided below. 
+
+
+**Particular case**: when $n=1$ the negative binomial corresponds to the the **geometric distribution**, which  models the probability distribution to observe the first success after $x$ failures: $P_{NegBin}(x; 1, p) = P_{geom}(x; p) = p \cdot (1-p)^x$.
+
+
+```{r begbin_distrib, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Negative binomial distribution. "}
+par(mfrow=c(1,1))
+
+# Some intuition about the negative binomiale parametrized using n and p.
+# The simple case, one success (see geometric distribution)
+# Let's have a look at the density
+p <- 1/6 # the probability of success
+n <- 1   # target for number of successful trials
+
+# The density function
+plot(0:10, dnbinom(0:10, n, p), type="h", col="blue", lwd=4)
+
+# the probability of zero failure before one success.
+# i.e the probability of success 
+dnbinom(0, n , p)
+
+# i.e the probability of at most 5 failure before one success. 
+sum(dnbinom(0:5, n , p)) # == pnbinom(5, 1, p)
+
+# The probability of at most 10 failures before one sucess 
+sum(dnbinom(0:10, n , p)) # == pnbinom(10, 1, p)
+
+# The probability to have more than 10 failures before one sucess
+1-sum(dnbinom(0:10, n , p)) # == 1 - pnbinom(10, 1, p)
+
+# With two successes
+# The probability of x failure before two success (e.g. two six)
+n <- 2
+plot(0:30, dnbinom(0:30, n, p), type="h", col="blue", lwd=2,
+     main="Negative binomial density",
+     ylab="P(x; n,p)",
+     xlab=paste("x = number of failures before", n, "successes"))
+
+# Expected value
+q <- 1-p
+(ev <- n*q/p)
+abline(v=ev, col="darkgreen", lwd=2)
+
+# Variance 
+(v <- n*q/p^2)
+arrows(x0=ev-sqrt(v), y0 = 0.04, x1=ev+sqrt(v), y1=0.04, col="brown",lwd=2, code=3, , length=0.2, angle=20)
+
+```
+
+
+## Using mean and dispersion
+
+The second way of parametrizing the distribution is using the mean value $m$ and the dispersion parameter $r$ (in **dnbinom** function of R, $m$ and $r$ are denoted by arguments **mu** and **size** respectively). The variance of the distribution can then be computed as $m + m^2/r$. 
+
+Note that $m$ can be deduced from $n$ and $p$.
+
+```{r}
+n <- 10
+p <- 1/6
+q <- 1-p
+mu <- n*q/p
+
+all(dnbinom(0:100, mu=mu, size=n) == dnbinom(0:100, size=n, prob=p))
+
+```
+
+
+## Modelling read counts through a negative binomial
+
+To perform diffential expression call DESeq will assume that, for each gene, the read counts are generated by a negative binomial distribution. One problem here will be to estimate, for each gene, the two parameters of the negative binomial distribution:  mean and dispersion. 
+
+* The mean will be estimated from the observed normalized counts in both conditions. 
+
+* The first step will be to compute a gene-wise dispersion. When the number of  available samples is insufficient to obtain a reliable estimator of the variance for each gene, DESeq will apply a **shrinkage** strategy, which assumes that counts produced by genes with similar expression level (counts) have similar variance (note that this is a strong assumption). DESeq will regress the gene-wise dispersion onto the means of the normalized counts to obtain an estimate of the dispersion that will be subsequently used to build the binomial model for each gene. 
+
+
+```{r estimate_dispersion}
+# Performing estimation of dispersion parameter
+dds.disp <- estimateDispersions(dds.norm)
+
+# A diagnostic plot which
+# shows the mean of normalized counts (x axis)
+# and dispersion estimate for each genes
+plotDispEsts(dds.disp)
+```
+
+
+-------------------------------------------------------
+
+****************************************************************
+# Performing differential expression call
+
+Now that a negative binomial model has been fitted for each gene, the **nbinomWaldTest** can be used to test for differential expression. The output is a data.frame which contains nominal p-values, as well as FDR values (correction for multiple tests computed with the Benjamini–Hochberg procedure).
+
+```{r DESeq2_Pvalue_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Histogram of the p-values reported by DESeq2. "}
+alpha <- 0.0001
+waldTestResult <- nbinomWaldTest(dds.disp)
+resultDESeq2 <- results(waldTestResult, alpha=alpha, pAdjustMethod="BH")
+
+# What is the object returned by nbinomTest()
+class(resultDESeq2)
+is(resultDESeq2) # a data.frame
+slotNames(resultDESeq2)
+head(resultDESeq2)
+
+# The column names of the data.frame
+# Note the column padj 
+# contains FDR values (computed Benjamini–Hochberg procedure)
+colnames(resultDESeq2)
+
+# Order the table by decreasing p-valuer
+resultDESeq2 <- resultDESeq2[order(resultDESeq2$padj),]
+head(resultDESeq2)
+
+# Draw an histogram of the p-values
+hist(resultDESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="DESeq2 P-value", ylab="Number of genes")
+```
+
+## Volcano plot
+
+
+```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Volcano plot of DESeq2 results. Abcsissa: log2(fold-change). Ordinate: significance ($-log_{10}(P-value)$). "}
+alpha <- 0.01 # Threshold on the adjusted p-value
+cols <- densCols(resultDESeq2$log2FoldChange, -log10(resultDESeq2$pvalue))
+plot(resultDESeq2$log2FoldChange, -log10(resultDESeq2$padj), col=cols, panel.first=grid(),
+     main="Volcano plot", xlab="Effect size: log2(fold-change)", ylab="-log10(adjusted p-value)",
+     pch=20, cex=0.6)
+abline(v=0)
+abline(v=c(-1,1), col="brown")
+abline(h=-log10(alpha), col="brown")
+
+gn.selected <- abs(resultDESeq2$log2FoldChange) > 2 & resultDESeq2$padj < alpha 
+text(resultDESeq2$log2FoldChange[gn.selected],
+     -log10(resultDESeq2$padj)[gn.selected],
+     lab=rownames(resultDESeq2)[gn.selected ], cex=0.4)
+
+```
+
+## Check the expression levels of the most differentially expressed gene
+
+It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
+
+```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=4, fig.cap="Barplot of the counts per sample fr a selected gene. "}
+gn.most.sign <- rownames(resultDESeq2)[1]
+gn.most.diff.val <- counts(dds.norm, normalized=T)[gn.most.sign,]
+barplot(gn.most.diff.val, col=col.pheno.selected, main=gn.most.sign, las=2, cex.names=0.5)
+```
+
+
+## Looking at the results with a MA plot
+
+One popular diagram in dna chip analysis is the M versus A plot (MA plot) between two conditions $a$ and $b$. In this representation :
+
+* M (Minus) is the log ratio of counts calculated for any gene.
+$$M_g = log2(\bar{x}_{g,a}) - log2(\bar{x}_{g,b})$$
+* A (add) is the average log counts which corresponds to an estimate of the gene expression level.
+$$A_g = \frac{1}{2}(log2(\bar{x}_g,a) + log2(\bar{x}_g,b))$$
+
+
+```{r DESEeq2_MA_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="MA plot. The abcsissa indicates the mean of normalized counts; the ordinate the log2(fold-change). "}
+# Draw a MA plot.
+# Genes with adjusted p-values below 1% are shown
+plotMA(resultDESeq2, colNonSig = "blue", main="MA plot")
+abline(h=c(-1:1), col="red")
+```
+
+
+****************************************************************
+# Hierarchical clustering
+
+To ensure that the selected genes distinguish well between "treated"" and "untreated" condition we will perform a hierachical clustering using the **`heatmap.2`** function from the gplots library.
+
+```{r signif_genes_count_heatmap, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Heatmap of the gebes deckared significant with DESeq2. Rows correspond to genes, columns to samples.  "}
+# We select gene names based on FDR (1%)
+gene.kept <- rownames(resultDESeq2)[resultDESeq2$padj <= alpha & !is.na(resultDESeq2$padj)]
+
+# We retrieve the normalized counts for gene of interest
+countTable.kept <- log2(countTable + epsilon)[gene.kept, ]
+dim(countTable.kept)
+
+# Install the gplots library if needed then load it
+if(!require("gplots")){
+  install.packages("gplots")
+}
+library("gplots")
+
+# Perform the hierarchical clustering with
+# A distance based on Pearson-correlation coefficient
+# and average linkage clustering as agglomeration criteria
+heatmap.2(as.matrix(countTable.kept), 
+          scale="row", 
+          hclust=function(x) hclust(x,method="average"), 
+          distfun=function(x) as.dist((1-cor(t(x)))/2), 
+          trace="none", 
+          density="none", 
+          labRow="",
+          cexCol=0.7)
+
+```
+
+
+****************************************************************
+# Functional enrichment
+
+We will now perform functional enrichment using the list of induced genes. This step will be performed using the gProfileR R library.
+
+```{r functional_enrichment_gProfileR}
+library(gProfileR)
+
+resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
+induced.sign <- rownames(resultDESeq2.df)[resultDESeq2.df$log2FoldChange >= 2 &  resultDESeq2.df$padj < alpha]
+# head(induced.sign)
+# names(term.induced)
+
+term.induced <- gprofiler(query=induced.sign, organism="scerevisiae")
+term.induced <- term.induced[order(term.induced$p.value),]
+# term.induced$p.value
+kable(term.induced[1:10,c("term.name",
+                      "term.size",
+                      "query.size",
+                      "overlap.size",
+                      "recall",
+                      "precision",
+                      "p.value", 
+                      "intersection")], 
+      format.args=c(engeneer=TRUE, digits=3), caption="**Table: functional analysis wit gProfileR. ** ")
+
+```
+
+And now using the list of repressed genes. 
+
+```{r}
+
+
+resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
+repressed.sign <- rownames(resultDESeq2.df)[resultDESeq2.df$log2FoldChange <= -2 &  resultDESeq2.df$padj < alpha]
+head(repressed.sign)
+
+term.repressed <- gprofiler(query=repressed.sign, organism="scerevisiae")
+term.repressed <- term.repressed[order(term.repressed$p.value),]
+kable(head(term.induced[,c("p.value", "term.name","intersection")], 10))
+
+```
+
+
+
+****************************************************************
+# Exercise: assess the effect of sample number on differential expression call
+
+Using a loop, randomly select 10 times  2,5,10,15..45 samples from WT and Snf2 KO. Perform differential expression calls and draw a diagram showing the number of differential expressed genes.
+
+
+
+
+```{r save_results, eval=FALSE}
+
+## Local paths: create a directory to store the results
+resultDir <- ("~/jgb71e_practicals/rnaseq_snf2_Schurch_2015/results")
+dir.create(resultDir, showWarnings = FALSE, recursive = TRUE)
+setwd(resultDir)
+
+
+
+# Export the table with statistics per sample.
+write.table(statsPerSample, file=file.path(resultDir, "stats_per_sample.tsv"),
+            quote=FALSE, sep="\t", col.names =NA, row.names = TRUE)
+
+# Export the DESeq2 result table
+DESeq2Table <- file.path(resultDir, "yeast_Snf2_vs_WT_DESeq2_diff.tsv")
+write.table(resultDESeq2, file=DESeq2Table, col.names = NA, row.names = TRUE, sep="\t", quote = FALSE)
+
+
+```
+

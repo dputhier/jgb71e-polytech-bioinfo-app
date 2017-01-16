@@ -11,7 +11,7 @@ output:
     theme: cerulean
     toc: yes
     toc_depth: 3
-    toc_float: yes
+    toc_float: no
   beamer_presentation:
     colortheme: dolphin
     fig_caption: yes
@@ -102,6 +102,7 @@ library(gProfileR)
 The RNA-Seq dataset we will use in this practical has been produced by [Gierliński *et al*, 2015)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4754627/pdf/btv425.pdf) and [(Schurch *et al*, 2016)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4878611/pdf/839.pdf)). The dataset is composed of 48 WT yeast samples vs 48 Snf2 knock-out mutant cell line. The prepared RNA-Seq libraries (unstranded) were pooled and sequenced on seven lanes of a single flow-cell on an Illumina HiSeq 2000 resulting in a total of 1 billion 50-bp single-end reads across the 96 samples. RNA-Seq reads have been cleaned, mapped and counted to generated a count data matrix containing 7126 rows/genes. The primary objective of this study was to check whether the observed gene read counts distribution where consistent with theorical models (e.g. negative binomial). More information can be obtained in the original paper.
  
 
+****************************************************************
 # Loading the dataset
 
 **R** enables to download data directly from the Web with the *download.file* function. After, we begin with some verification steps.
@@ -229,9 +230,10 @@ This has important consequences: any read count should be interpreted relative t
 </div>
 
 
+****************************************************************
 # Descriptive statistics
 
-### Basic statistics
+## Basic statistics
 
 Before going further in the analysis, we will compute some descriptive statistics on the dataset.
 At this stage we only compute statistics per sample, since statistics per gene are meaningful only after library-wise normalization of the counts. 
@@ -299,7 +301,7 @@ Finally, randomly choose some columns with the *sample* function and look at the
 statsPerSample[sample(1:ncol(countTable), size = 10),]
 ```
 
-### Distributions
+## Distributions
 
 The summary only displays a few milestone values (mean, median, quartiles). In order to get a better intuition of the data, we can draw an histogram of all values.
 
@@ -340,7 +342,7 @@ legend("topright", legend=names(strainColor), col=strainColor, lwd=2)
 
 **Beware**: the R function *plotDensity* does not display the actual distribution of your values, but a polynomial fit. The representation thus generally looks smoother than the actual data. It is important to realize that, in some particular cases, the fit can lead to extrapolated values which can be misleading.
 
-### Scatter plots
+## Scatter plots
 
 Let's have a look at the scatter plots using the *pairs* function. We will only represent 10 randomly selected samples.
 
@@ -363,6 +365,7 @@ The command *pairs* draws a scatter plot for each pair of columns of the input d
 In contrast, on all the plots comparing a WT and a KO sample, we can see some points (genes) discarding from the diagonal.
 
 
+****************************************************************
 # Eliminating undetected genes
 
 All genes from genome the *S. cerevisiae* where quantified. However only a fraction of them where expressed and some of them where to weakly expressed to be detected in any of the sample. As a result the count table may contain rows with only zero values (null counts). 
@@ -393,7 +396,8 @@ countTable <- countTable[rowSums(countTable) > 0,]
 </div>
 
 
-# Selecting randomly samples
+****************************************************************
+# Selecting samples randomly
 
 One of the question that will drive the analysis will be to define the impact of the number of sample on the analysis. 
 
@@ -416,6 +420,7 @@ col.pheno.selected <- phenoTable$color[selected.samples]
 ```
 
 
+****************************************************************
 # Differential analysis with DESeq2
 
 In this section we will search for genes whose expression is affected by the genetic invalidation. You will first need to install the **DESeq2** bioconductor library then load it.
@@ -432,6 +437,7 @@ if(!require("DESeq2")){
 library("DESeq2")
 ```
 
+****************************************************************
 # Creating a DESeqDataSet dataset
 
 We will then create a **DESeqDataSet** using the **DESeqDataSetFromMatrix** function. Get some help about the **DESeqDataSet** and have a look at some important accessor methods: **counts**, **conditions**, **estimateSizeFactors**, **sizeFactors**, **estimateDispersions** and **nbinomTest**.
@@ -455,6 +461,7 @@ slotNames(dds0)
 #?"DESeqDataSet-class"
 ```
 
+****************************************************************
 # Normalization
 
 The normalization procedure (RLE) is implemented through the **estimateSizeFactors** function. 
@@ -526,6 +533,7 @@ plotDensity(log2(counts(dds.norm, normalized=TRUE)+epsilon), col=col.pheno.selec
 
 ```
 
+****************************************************************
 # Count variance is related to mean
 
 As you can see from the following plot the relationship between variance and mean is not strictly linear. This can be shown by the poor fit that is obtained using a linear regression. 
@@ -569,6 +577,7 @@ abline(a=0, b=1, col="brown")
 ```
 
 
+****************************************************************
 # Modeling read counts
 
 Let us imagine that we would produce a lot of RNA-Seq experiments from the same samples (technical replicates). For each gene $g$ the measured read counts would be expected to vary rather slighlty around the expected mean and would be probably well modeled using a Poisson distribution. However, when working with biological replicates more variations are intrinsically expected. Indeed,  the measured expression values for each genes are expected to fluctuate more importantly, due to the combination of biological and technical factors: inter-individual variations in gene regulation, sample purity, cell-synchronization issues or reponses to environment (e.g. heat-shock). 
@@ -577,12 +586,12 @@ The Poisson distribution has only one parameter indicating its expected mean : $
 
 As a consequence, when working with RNA-Seq data, many of the current approaches for differential expression call rely on an alternative distribution: the *negative binomial*  (note that this holds true also for other -Seq approaches, e.g. ChIP-Seq with replicates).  
 
-### What is the negative binomial ?
+## What is the negative binomial ?
 
 The negative binomial distribution is a discrete distribution that give us the probability of observing $x$ failures before a target number of succes $n$ is obtained. As we will see later the negative binomial can also be used to model over-dispersed data (in this case this overdispersion is relative to the poisson model). 
 
 
-### The probability of $x$ failures before $n$ success
+## The probability of $x$ failures before $n$ success
 
 First, given a Bernouilli trial with a probability $p$ of success, the **negative binomial** distribution describes the probability of observing $x$ failures before a target number of successes $n$ is reached. In this case the parameters of the distribution will thus be $p$, $n$ (in **dnbinom** function of R, $n$ and $p$ are denoted by arguments **size** and **prob** respectively). 
 
@@ -641,7 +650,7 @@ arrows(x0=ev-sqrt(v), y0 = 0.04, x1=ev+sqrt(v), y1=0.04, col="brown",lwd=2, code
 ```
 
 
-### Using mean and dispersion
+## Using mean and dispersion
 
 The second way of parametrizing the distribution is using the mean value $m$ and the dispersion parameter $r$ (in **dnbinom** function of R, $m$ and $r$ are denoted by arguments **mu** and **size** respectively). The variance of the distribution can then be computed as $m + m^2/r$. 
 
@@ -658,7 +667,7 @@ all(dnbinom(0:100, mu=mu, size=n) == dnbinom(0:100, size=n, prob=p))
 ```
 
 
-### Modelling read counts through a negative binomial
+## Modelling read counts through a negative binomial
 
 To perform diffential expression call DESeq will assume that, for each gene, the read counts are generated by a negative binomial distribution. One problem here will be to estimate, for each gene, the two parameters of the negative binomial distribution:  mean and dispersion. 
 
@@ -680,6 +689,7 @@ plotDispEsts(dds.disp)
 
 -------------------------------------------------------
 
+****************************************************************
 # Performing differential expression call
 
 Now that a negative binomial model has been fitted for each gene, the **nbinomWaldTest** can be used to test for differential expression. The output is a data.frame which contains nominal p-values, as well as FDR values (correction for multiple tests computed with the Benjamini–Hochberg procedure).
@@ -708,7 +718,7 @@ head(resultDESeq2)
 hist(resultDESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="DESeq2 P-value", ylab="Number of genes")
 ```
 
-# Volcano plot
+## Volcano plot
 
 
 ```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Volcano plot of DESeq2 results. Abcsissa: log2(fold-change). Ordinate: significance ($-log_{10}(P-value)$). "}
@@ -728,7 +738,7 @@ text(resultDESeq2$log2FoldChange[gn.selected],
 
 ```
 
-# Check the expression levels of the most differentially expressed gene
+## Check the expression levels of the most differentially expressed gene
 
 It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
 
@@ -739,7 +749,7 @@ barplot(gn.most.diff.val, col=col.pheno.selected, main=gn.most.sign, las=2, cex.
 ```
 
 
-# Looking at the results with a MA plot
+## Looking at the results with a MA plot
 
 One popular diagram in dna chip analysis is the M versus A plot (MA plot) between two conditions $a$ and $b$. In this representation :
 
@@ -758,7 +768,6 @@ abline(h=c(-1:1), col="red")
 
 
 ****************************************************************
-
 # Hierarchical clustering
 
 To ensure that the selected genes distinguish well between "treated"" and "untreated" condition we will perform a hierachical clustering using the **`heatmap.2`** function from the gplots library.
@@ -792,6 +801,7 @@ heatmap.2(as.matrix(countTable.kept),
 ```
 
 
+****************************************************************
 # Functional enrichment
 
 We will now perform functional enrichment using the list of induced genes. This step will be performed using the gProfileR R library.
@@ -836,7 +846,8 @@ kable(head(term.induced[,c("p.value", "term.name","intersection")], 10))
 
 
 
-# Assess the effect of sample number on differential expression call
+****************************************************************
+# Exercise: assess the effect of sample number on differential expression call
 
 Using a loop, randomly select 10 times  2,5,10,15..45 samples from WT and Snf2 KO. Perform differential expression calls and draw a diagram showing the number of differential expressed genes.
 

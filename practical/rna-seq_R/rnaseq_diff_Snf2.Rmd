@@ -1,9 +1,13 @@
 ---
 title: "RNA-Seq - differential expression using DESeq2"
-author: 'N. Terrapon (adapted from D. Puthier, Hugo Varet, Julie Auberta and J. van
-  Helden) '
+author: "Nicolas Terrapon,  Denis Puthier and Jacques van Helden (adapted from tutorial from Hugo Varet, Julie Aubert and J. van Helden)"
 date: 'First version: 2016-12-10; Last update: `r Sys.Date()`'
 output:
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
   html_document:
     fig_caption: yes
     highlight: zenburn
@@ -12,18 +16,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: no
-  beamer_presentation:
-    colortheme: dolphin
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 6
-    fonttheme: structurebold
-    highlight: tango
-    incremental: no
-    keep_tex: no
-    slide_level: 2
-    theme: Montpellier
-    toc: yes
   ioslides_presentation:
     colortheme: dolphin
     fig_caption: yes
@@ -38,11 +30,18 @@ output:
     theme: cerulean
     toc: yes
     widescreen: yes
-  pdf_document:
+  beamer_presentation:
+    colortheme: dolphin
     fig_caption: yes
-    highlight: zenburn
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
     toc: yes
-    toc_depth: 3
   slidy_presentation:
     fig_caption: yes
     fig_height: 4
@@ -75,7 +74,7 @@ transition: linear
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = FALSE, message = FALSE, warning = FALSE,
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE, message = FALSE, warning = FALSE,
                       comment = "")
 
 # Options to display pretty numbers
@@ -211,7 +210,11 @@ tail(phenoTable)
 </div>
 <br>
 
-2. Check the completeness (dimensions) of the data (tables)
+2. Check the dimensions of the data (tables). 
+
+    a) How many genes do we have?
+    b) How many samples?
+    c) Check that the dimensions of the sample table and pheno table are consistent.
 
 <a href="javascript:sizeTbl2('block','ex2')">View solution</a>|<a href="javascript:sizeTbl2('none','ex2')">Hide solution</a>
 <div id="ex2"  style="overflow:hidden;display:none">  
@@ -219,13 +222,17 @@ tail(phenoTable)
 
 ```{r, eval=FALSE}
 ## Get the number of genes and sample from the dimensions of the count table
-nb.samples <- ncol(countTable)
-print(nb.samples)
 nb_genes <- nrow(countTable)
 print(nb_genes)
 
+nb.samples <- ncol(countTable)
+print(nb.samples)
+
 ## Check that the dimension of the pheno table is consistent with the number of samples
+dim(countTable)
 dim(phenoTable)
+## Each row of the pheno table corresponds to one sample.
+## Each column of the count table corresponds to one sample.
 ```
 </div>
 <br>
@@ -233,6 +240,7 @@ dim(phenoTable)
 3. Check the number of replicates in each class using the *table* function. To better understand what you could do with this function, play with it (varying the parameters) with the following test table.
 
 ```{r, eval=FALSE}
+
 ## Quick test with a small table generated on the flight
 testTable <- data.frame(
   ABC = sample(c("A", "B", "C", "D", "E"), replace=TRUE, 20),
@@ -258,6 +266,8 @@ table(testTable[, c("gender", "yesno")])
 
 ## Check the number of samples per strain in the yeast count table
 table(phenoTable$strain)
+
+## Check the consistency between strains and sample colors
 table(phenoTable)
 
 ```
@@ -306,6 +316,10 @@ Among the reference functions in **R**, *apply* (and its derivates) allow to rep
 ```{r stats_per_sample1, eval=TRUE}
 statsPerSample <- data.frame(t(apply(countTable, 2, summary)))
 head(statsPerSample)
+
+# Redefine column nemes for readability
+names(statsPerSample) <- c("min", "Q1", "median", "mean", "Q3", "max")
+kable(head(statsPerSample))
 ```
 
 We can now add some columns to the stats per sample. For example, here are the library sums and the 5% quantile.
@@ -316,6 +330,7 @@ statsPerSample$perc05 <- apply(countTable, 2, quantile, probs=0.05)
 ```
 
 #### Exercice 
+
 Integrate some more columns to *statsPerSample*:
 - the 10%, 90% and 95% quantile;
 
@@ -323,7 +338,13 @@ Integrate some more columns to *statsPerSample*:
 <div id="ex5"  style="overflow:hidden;display:none">
 
 ```{r stats_per_sampleEx1, eval=TRUE}
-statsPerSample[c("perc10", "perc90", "perc95")] <- 
+## Add columns with some indicative percentiles
+statsPerSample[, "perc10"] <- apply(countTable, 2, quantile, 0.10)
+statsPerSample[, "perc90"] <- apply(countTable, 2, quantile, 0.90)
+statsPerSample[, "perc95"] <- apply(countTable, 2, quantile, 0.95)
+
+## Alternatively, this can be done in a single command
+statsPerSample[,c("perc10", "perc90", "perc95")] <- 
   apply(countTable, 2, quantile, c(0.10, 0.90, 0.95))
 ```
 </div>
@@ -335,6 +356,7 @@ statsPerSample[c("perc10", "perc90", "perc95")] <-
 <div id="ex6"  style="overflow:hidden;display:none">
 
 ```{r stats_per_sampleEx2, eval=TRUE}
+## Add a column with the number of zero counts per sample
 statsPerSample$zeros <- apply(countTable==0, 2, sum)
 ```
 </div>
@@ -345,6 +367,7 @@ statsPerSample$zeros <- apply(countTable==0, 2, sum)
 <div id="ex7"  style="overflow:hidden;display:none">
 
 ```{r stats_per_sampleEx3, eval=TRUE}
+## Add a column to the stats per sample, with the percentage of genes with zero counts
 statsPerSample$percZeros <- 100*statsPerSample$zeros/nrow(countTable)
 ```
 
@@ -367,35 +390,55 @@ library(knitr)
 kable(statsPerSample[sample(1:ncol(countTable), size = 10),])
 ```
 
+### Interpretation of the stats per sample
 
+- In all samples, several hundreds of genes are completely **undetected** (**zeros**).
+- The huge difference between the central tendency (mean, median) and the maximum reflects the presence of **outliers**: a few genes have hundreds of thousands counts.
+- The mean count per genes show important fluctuations, indicating the need for normalisation. 
+- The median is much lower than the mean, indicating right-skewed asymmetry. 
 
 ## Distributions
 
 The summary only displays a few milestone values (mean, median, quartiles). In order to get a better intuition of the data, we can draw an histogram of all values.
 
-```{r data_distrib_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Histogram of raw counts. The scale is determined by the gene with the highest count, which is apparently an outlier. "}
-hist(as.matrix(countTable), col="blue", border="white")
-```
+```{r data_distrib_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=12, fig.cap="Histogram of  counts per genes. **Top: raw counts. ** the scale is determined by the gene with the highest count, which is apparently an outlier.  **Middle: ** raw counts, with X axis truncated to 2000 in order to display a representative range despite outliers. **Bottom: ** log2-transformed counts (bottom) per gene, with a pseudocount of 1 to avoid minus infinitevalues resulting from zero counts. "}
 
-The histogram is not very informative so far, apparently due to the presence of a few very high count values, that impose a very large scale on the $X$ axis. We can use a logarithmic transformation to improve the readability. Note that we will add pseudo counts to avoid problems with "zero" counts observed for some genes in some samples.
+par(mfrow=c(3,1))
 
-```{r log2_counts_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5}
+hist(as.matrix(countTable), col="blue", border="white", breaks=100)
+
+hist(as.matrix(countTable), col="blue", border="white",
+     breaks=20000, xlim=c(0,2000), main="Counts per gene",
+     xlab="Counts (truncated axis)", ylab="Number of genes", 
+     las=1, cex.axis=0.7)
+
 epsilon <- 1 # pseudo-count to avoid problems with log(0)
 hist(as.matrix(log2(countTable + epsilon)), breaks=100, col="blue", border="white",
-     main="Histogram of log2-transformed counts per gene", xlab="log2(counts)", ylab="Number of genes")
+     main="Log2-transformed counts per gene", xlab="log2(counts+1)", ylab="Number of genes", 
+     las=1, cex.axis=0.7)
+
+par(mfrow=c(1,1))
 ```
+
+### Interpretation
+
+- The top histogram is not very informative so far, apparently due to the presence of a few very high count values, that impose a very large scale on the $X$ axis. 
+- The middle histogram shows the representative range. Note the height of the first bin, which includes the zero counts. 
+- The logarithmic transformation (bottom histogram) improves the readability. Note that we added a pseudo-count of `r epsilon` to avoid problems with the log transformation of zero counts (which gives  $-\infty$).
+
+
 
 To get better insights into the distribution per sample, the *boxplot* offer a good perspective.
 
-```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=10, fig.cap="Box plots of non-normalized log2(counts) per sample. "}
+```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=10, fig.cap="Box plots of non-normalized log2(counts+1) per sample. "}
 boxplot(log2(countTable + epsilon), col=phenoTable$color, pch=".", 
         horizontal=TRUE, cex.axis=0.5,
-        las=1, ylab="Samples", xlab="log2(Counts +1)")
+        las=1, ylab="Samples", xlab="log2(counts +1)")
 ```
 
 Another way to get an intuition of the value distributions is to use the *plotDensity* function, which draws one density curve for each sample.
 
-```{r log2_counts_densities_per_sample, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Densities of log2(counts). Each curve corresponds to one sample. "}
+```{r log2_counts_densities_per_sample, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Densities of log2(counts+1). Each curve corresponds to one sample. "}
 # We will require one function from the affy package
 if(!require("affy")){
   source("http://bioconductor.org/biocLite.R")
@@ -610,11 +653,11 @@ all(round(estimSf(dds0),6) == round(sizeFactors(dds.norm), 6))
 # Checking the normalization
 par(mfrow=c(2,2),cex.lab=0.7)
 boxplot(log2(counts(dds.norm)+epsilon),  col=col.pheno.selected, cex.axis=0.7, 
-        las=1, xlab="log2(counts)", horizontal=TRUE, main="Raw counts")
+        las=1, xlab="log2(counts+1)", horizontal=TRUE, main="Raw counts")
 boxplot(log2(counts(dds.norm, normalized=TRUE)+epsilon),  col=col.pheno.selected, cex.axis=0.7, 
         las=1, xlab="log2(normalized counts)", horizontal=TRUE, main="Normalized counts") 
 plotDensity(log2(counts(dds.norm)+epsilon),  col=col.pheno.selected, 
-            xlab="log2(counts)", cex.lab=0.7, panel.first=grid()) 
+            xlab="log2(counts+1)", cex.lab=0.7, panel.first=grid()) 
 plotDensity(log2(counts(dds.norm, normalized=TRUE)+epsilon), col=col.pheno.selected, 
             xlab="log2(normalized counts)", cex.lab=0.7, panel.first=grid()) 
 # Restore default parameters
@@ -666,6 +709,14 @@ abline(a=0, b=1, col="brown")
 
 ```
 
+### Interpretation
+
+On the variance/mean plot, each dot corresponds to one gene, the abcsissa indicates the mean of the counts for this gene across all samples, and the ordinate its variance. 
+
+By definition, the Poisson distribution has a mean equal to its variance. In RNA-seq data, the variance is typically hihger than the mean. This distribution is said "**over-dispersed**" with respect to the Poisson. This over-dispersion is interpreted as an effect of the biological fluctuations between samples. 
+
+In order to model this over-dispersion, RNA-seq analysis relies on the **negative binomial distribution**. 
+
 
 ****************************************************************
 # Modeling read counts
@@ -678,8 +729,9 @@ As a consequence, when working with RNA-Seq data, many of the current approaches
 
 ## What is the negative binomial ?
 
-The negative binomial distribution is a discrete distribution that give us the probability of observing $x$ failures before a target number of succes $n$ is obtained. As we will see later the negative binomial can also be used to model over-dispersed data (in this case this overdispersion is relative to the poisson model). 
+The negative binomial distribution is a discrete distribution that gives us the probability of observing $x$ failures before a given number of successes $n$ is obtained. 
 
+The negative binomial has a variance larger than its mean, and it therefore a popular way to model the typical over-dispersion of the RNA-seq data (in this case this overdispersion is relative to the poisson model). 
 
 ## The probability of $x$ failures before $n$ success
 
@@ -689,29 +741,30 @@ $$P_{NegBin}(x; n, p) = \binom{x+n-1}{x}\cdot p^n \cdot (1-p)^x = C^{x}_{x+n-1}\
 
 In this formula, $p^n$ denotes the probability to observe $n$ successes, $(1-p)^x$ the probability of $x$ failures, and the binomial coefficient $C^{x}_{x+n-1}$ indicates the number of possible ways to dispose $x$ failures among the $x+n-1$ trials that precede the last one (the problem statement imposes for the last trial to be a success).
 
-The negative binomial distribution has expected value $n\frac{q}{p}$ and variance $n\frac{q}{p^2}$. Some examples of using this distribution in R are provided below. 
+The negative binomial distribution has expected value $n\frac{q}{p}$ where $q=1p$ is the probability of failure at each trial. 
+
+Its variance is $n\frac{q}{p^2}$ and is thus by definition smaller tha the mean (except in the trivial case where $p=1$). 
+We show below some examples of this distribution. 
 
 
 **Particular case**: when $n=1$ the negative binomial corresponds to the the **geometric distribution**, which  models the probability distribution to observe the first success after $x$ failures: $P_{NegBin}(x; 1, p) = P_{geom}(x; p) = p \cdot (1-p)^x$.
 
 
-```{r begbin_distrib, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Negative binomial distribution. "}
-par(mfrow=c(1,1))
+```{r begbin_distrib, fig.path="figures/schurch2016_", fig.width=7, fig.height=12, fig.cap="**Negative binomial density. ** Blue bars: negative binomial density, i.e.  probability to obsere exactly $x$ failures before the $n^{th}$ success. The green vertical bar denotes the expected value (mean). Brown lines: Poisson density with the same expected value. Horizontal arrows indicate a 1 standard deviation range around the means, for the negative binomial (blue) and Poisson (red) distributins, respectively. "}
+par(mfrow=c(3,2))
 
 # Some intuition about the negative binomiale parametrized using n and p.
 # The simple case, one success (see geometric distribution)
 # Let's have a look at the density
 p <- 1/6 # the probability of success
 n <- 1   # target for number of successful trials
-
-# The density function
-plot(0:10, dnbinom(0:10, n, p), type="h", col="blue", lwd=4)
+x <- 1:30
 
 # the probability of zero failure before one success.
 # i.e the probability of success 
 dnbinom(0, n , p)
 
-# i.e the probability of at most 5 failure before one success. 
+# Probability of at most 5 failure before the first success.
 sum(dnbinom(0:5, n , p)) # == pnbinom(5, 1, p)
 
 # The probability of at most 10 failures before one sucess 
@@ -720,24 +773,75 @@ sum(dnbinom(0:10, n , p)) # == pnbinom(10, 1, p)
 # The probability to have more than 10 failures before one sucess
 1-sum(dnbinom(0:10, n , p)) # == 1 - pnbinom(10, 1, p)
 
-# With two successes
+################################################################
+# With two successes.
+
 # The probability of x failure before two success (e.g. two six)
-n <- 2
-plot(0:30, dnbinom(0:30, n, p), type="h", col="blue", lwd=2,
-     main="Negative binomial density",
-     ylab="P(x; n,p)",
+n <- 5
+p <- 1/6 # the probability of success
+for (n in c(1,2,5, 10, 20, 100)) {
+
+  # Expected value
+  q <- 1-p
+  (ev <- n*q/p)
+  
+  # Variance 
+  (v <- n*q/p^2)
+  
+  # Plot the negative binomial density  
+  X <- 0:max(30, ceiling(2.5*ev))
+  dX <- dnbinom(X, n, p)
+  dX.pois <- dpois(X, ev)
+  maxY <- max(dX, dX.pois)
+  plot(X, dX, type="h", col="blue", lwd=2,
+     main=paste("Negative binomial density, n =", n),
+     ylab="P(x; n,p)", ylim=c(0, maxY*1.3), 
      xlab=paste("x = number of failures before", n, "successes"))
 
-# Expected value
-q <- 1-p
-(ev <- n*q/p)
-abline(v=ev, col="darkgreen", lwd=2)
+  # Plot the Poisson density
+  lines(X, dX.pois, col="brown", lwd=1)
 
-# Variance 
-(v <- n*q/p^2)
-arrows(x0=ev-sqrt(v), y0 = 0.04, x1=ev+sqrt(v), y1=0.04, col="brown",lwd=2, code=3, , length=0.2, angle=20)
+  # Plot the geometric density if n=1
+  if (n==1) {
+    dX.geom <- dgeom(X, prob=p)
+    lines(X, dX.geom, col="darkviolet", lwd=1)
+  }
+
+  # Plot the expected value
+  abline(v=ev, col="darkgreen", lwd=2)
+
+  # Draw an arrow at +- 1stdev for negative binomial
+  arrows(x0=ev-sqrt(v), y0=maxY*1.1,
+         x1=ev+sqrt(v), y1=maxY*1.1, 
+         col="darkblue",lwd=2, code=3, length=0.05, angle=20)
+
+  # Draw an arrow at +- 1stdev for the Poisson
+    arrows(x0=ev-sqrt(ev), y0=maxY*1.2,
+         x1=ev+sqrt(ev), y1=maxY*1.2, 
+         col="brown",lwd=2, code=3, length=0.05, angle=20)
+
+    # Add a legend
+    legend("topright", 
+           lwd=2, 
+           col=c("blue", "darkgreen", "darkblue", "brown"),
+           c(paste("negbin, n =", n),
+             paste("mean =", ev),
+             paste("negbin sd =", round(digits=2, sqrt(v))),
+             paste("Poisson sd =", round(digits=2, sqrt(ev)))
+             ), cex=0.7
+           )
+           
+}
+
+par(mfrow=c(1,1))
 
 ```
+
+### Interpretation
+
+The negative binomial density (blue bars on the Figure)  indicates the probability to observe exactly $x$ failures before the $n^{th}$ success, in a Bernoulli schema with probability of success $p$. 
+
+The negative binomial is over-dispersed relative to a Poisson distribution (brown line) with the same expected value (green vertical bar). 
 
 
 ## Using mean and dispersion
@@ -777,14 +881,13 @@ plotDispEsts(dds.disp)
 ```
 
 
--------------------------------------------------------
 
 ****************************************************************
 # Performing differential expression call
 
 Now that a negative binomial model has been fitted for each gene, the **nbinomWaldTest** can be used to test for differential expression. The output is a data.frame which contains nominal p-values, as well as FDR values (correction for multiple tests computed with the Benjamini–Hochberg procedure).
 
-```{r DESeq2_Pvalue_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Histogram of the p-values reported by DESeq2. "}
+```{r DESeq2_Wald_test}
 alpha <- 0.0001
 waldTestResult <- nbinomWaldTest(dds.disp)
 resultDESeq2 <- results(waldTestResult, alpha=alpha, pAdjustMethod="BH")
@@ -804,38 +907,150 @@ colnames(resultDESeq2)
 resultDESeq2 <- resultDESeq2[order(resultDESeq2$padj),]
 head(resultDESeq2)
 
-# Draw an histogram of the p-values
-hist(resultDESeq2$padj, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="DESeq2 P-value", ylab="Number of genes")
 ```
+
+```{r DESeq2_Pvalue_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=4, fig.cap="**Histogram of the p-values reported by DESeq2. ** Note that we display here the nominal p-values (not corrected for multiple testing), which would have an uniform distribution if all genes were under $H0$. "}
+
+# Draw an histogram of the p-values
+h1 <- hist(resultDESeq2$pvalue, breaks=20, col="grey", main="DESeq2 p-value distribution", xlab="Nominal P-value", ylab="Number of genes")
+
+# Plot an horizontal bar with the estimation of m0 according to Storey-Tibshirani method (2003)
+m <- sum(h1$counts) # Number of genes with a p-value
+m0 <- 2*(sum(as.vector(na.omit(resultDESeq2$pvalue)) >0.5)) # Estimation of the number of genes under H0
+m1 <- m - m0 # Estimation of the number of genes under m1
+nbins <- length(h1$counts)
+abline(v=m0/nbins, col="blue")
+
+```
+
+### Interpretation of the p-value
+
+For each gene $i$ we tested the hypothesis of equality between the mean levels of expressions for Snf2 ($\mu_{i,Sbf2}$)  and wild-type (($\mu_{i,WT}$) strains. 
+
+The null hypothesis is that the Snf2 and WT samples were drawn from populations having the same mean for the considered gene.
+
+$$H_0: \mu_{i,Snf2} = \mu_{i,WT}$$
+
+We computed the mean and dispersion of the read counts in $n=48$ replicates per condition. We measure the difference between the means per condition for these samples, and we need to estimate their significance relative to the dispersion. Indeed, a same change in expression (e.g. a fold-change of 1.5) can be significant if we have a large number of replicates and if the counts per gene are highly reproducible between samples of the same condition (i.e. if their dispersion per sample is small). However, the same fold-change might result from the sampling effects if it is observed for a gene with high fluctuations between replicates, or if our number of replicates is too small to achieve a reliable estimation of the mean and standard deviation. 
+
+The goal of the test of hypothesis is precisely to estimate the significance of the observed effect (the difference between log2 of the normalized counts, which corresponds to the log2 fold change), whilst taking into account the dispersion of the measurements across replicates. 
+
+The **p-value** indicates the probability to obtain, under the null hypothesis, an effect at least as extreme as the measured effect. This p-value can be interpreted as a **False Positive Risk** (**FPR**), i.e. the risk to declare a gene significant whereas it is expressed at the same level in the Snf2 and WT strains. 
+
+
+
+Here we analyzed `r nrow(resultDESeq2)` genes, and tested the null hypothesis for each of them. 
 
 ## Volcano plot
 
 
-```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=7, fig.height=5, fig.cap="Volcano plot of DESeq2 results. Abcsissa: log2(fold-change). Ordinate: significance ($-log_{10}(P-value)$). "}
-alpha <- 0.01 # Threshold on the adjusted p-value
-cols <- densCols(resultDESeq2$log2FoldChange, -log10(resultDESeq2$pvalue))
-plot(resultDESeq2$log2FoldChange, -log10(resultDESeq2$padj), col=cols, panel.first=grid(),
-     main="Volcano plot", xlab="Effect size: log2(fold-change)", ylab="-log10(adjusted p-value)",
-     pch=20, cex=0.6)
+```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=10, fig.height=5, fig.cap="**Volcano plot of DESeq2 results. ** Abcsissa: effect size, estimated a the log2(fold-change) between Snf2 and WT mutant. Ordinate: significance ($-log_{10}(adjusted P-value)$). "}
+
+alpha <- 0.01 # Threshold on the p-value
+
+# par(mfrow=c(1,2))
+
+# Compute significance, with a maximum of 320 for the p-values set to 0 due to limitation of computation precision
+resultDESeq2$sig <- -log10(resultDESeq2$padj)
+sum(is.infinite(resultDESeq2$sig))
+resultDESeq2[is.infinite(resultDESeq2$sig),"sig"] <- 350
+# View(resultDESeq2[is.na(resultDESeq2$pvalue),])
+
+# Select genes with a defined p-value (DESeq2 assigns NA to some genes)
+genes.to.plot <- !is.na(resultDESeq2$pvalue)
+# sum(genes.to.plot)
+range(resultDESeq2[genes.to.plot, "log2FoldChange"])
+# View(resultDESeq2[genes.to.plot,])
+
+## Volcano plot of adjusted p-values
+cols <- densCols(resultDESeq2$log2FoldChange, resultDESeq2$sig)
+cols[resultDESeq2$pvalue ==0] <- "purple"
+resultDESeq2$pch <- 19
+resultDESeq2$pch[resultDESeq2$pvalue ==0] <- 6
+plot(resultDESeq2$log2FoldChange, 
+     resultDESeq2$sig, 
+     col=cols, panel.first=grid(),
+     main="Volcano plot", 
+     xlab="Effect size: log2(fold-change)",
+     ylab="-log10(adjusted p-value)",
+     pch=resultDESeq2$pch, cex=0.4)
 abline(v=0)
 abline(v=c(-1,1), col="brown")
 abline(h=-log10(alpha), col="brown")
 
+## Plot the names of a reasonable number of genes, by selecting those begin not only significant but also having a strong effect size
 gn.selected <- abs(resultDESeq2$log2FoldChange) > 2 & resultDESeq2$padj < alpha 
 text(resultDESeq2$log2FoldChange[gn.selected],
      -log10(resultDESeq2$padj)[gn.selected],
      lab=rownames(resultDESeq2)[gn.selected ], cex=0.4)
 
+# par(mfrow=c(1,1))
+
 ```
+
+
+### Interpretation of the volcano plot
+
+The volcano plot enables to simultaneously capture the effect size (abcsissa) and significance (ordinate) of each tested gene. 
+
+### Log2 fold-changes
+
+For RNA-seq transcriptome data, the effect size is estimated by the **log2 fold-change** ($log2FC$), i.e. the logarithm in base 2 of the ratio between normalized counts in the test and control conditions. 
+
+Positive $X$ values denote genes over-expressed in the test relative to the control. 
+
+Negative values denote genes under-expressed in the test relative to the control.
+
+| Effect size ($logFC$) | Fold-change | Interpretation |
+|---------|----------|-------------------------------|
+| 4 |  $FC=2^4 = `r 2^4`$ | this gene has a `r 2^4` times higher expression level in test than in control conditions |
+| -4 |  $FC=2^{-4} = `r 2^(-4)`$ | expression level `r 2^4` times lower in test than in control |
+| 1 |  $FC=2^1=2$ | expression level 2 times lower in test than in control |
+| 0 |  $FC=2^0=1$ | same expression level in test and control |
+ 
+### Significance
+
+The **significance** is the minus log10 of the p-value. 
+
 
 ## Check the expression levels of the most differentially expressed gene
 
 It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
 
-```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=4, fig.cap="Barplot of the counts per sample fr a selected gene. "}
-gn.most.sign <- rownames(resultDESeq2)[1]
-gn.most.diff.val <- counts(dds.norm, normalized=T)[gn.most.sign,]
-barplot(gn.most.diff.val, col=col.pheno.selected, main=gn.most.sign, las=2, cex.names=0.5)
+```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=8, fig.cap="Barplot of the counts per sample for a few selected genes. **Top:** highly significant gene with an important fold change. **Middle:** very significant gene with a relatively low fold change. **Bottom:** non-significant gene.  "}
+
+selectedGenes <- c(
+  "Most significant" =  rownames(resultDESeq2)[which.max(resultDESeq2$sig)])
+
+  #  top.logFC = rownames(resultDESeq2)[which.max(resultDESeq2$log2FoldChange)])
+#gn.most.sign <- rownames(resultDESeq2)[1]
+#gn.most.diff.val <- counts(dds.norm, normalized=T)[gn.most.sign,]
+
+## Select a gene with small fold change but high significance
+sel1 <- subset(
+  na.omit(resultDESeq2), 
+  sig >= 50 & log2FoldChange > 0 & log2FoldChange < 0.5)
+# dim(sel1)
+selectedGenes <- append(selectedGenes, 
+                         c("Small FC yet significant"=rownames(sel1)[1]))
+
+## Select the non-significant gene with the highest fold change
+sel2 <- subset(x = na.omit(resultDESeq2), padj > alpha & log2FoldChange > 0 & baseMean > 1000 & baseMean < 10000)
+# dim(sel2)
+sel2 <- sel2[order(sel2$log2FoldChange, decreasing = TRUE),][1,]
+selectedGenes <- append(
+  selectedGenes, 
+  c("Non-significant"=rownames(sel2)[1]))
+
+par(mfrow=c(length(selectedGenes),1))
+for (g in selectedGenes) {
+  barplot(counts(dds.norm, normalized=TRUE)[g,], 
+          col=phenoTable$color, 
+          main=g, las=2, cex.names=0.5)
+}
+
+par(mfrow=c(1,1))
+
 ```
 
 
@@ -896,7 +1111,9 @@ heatmap.2(as.matrix(countTable.kept),
 
 We will now perform functional enrichment using the list of induced genes. This step will be performed using the gProfileR R library.
 
-```{r functional_enrichment_gProfileR}
+```{r functional_enrichment_gProfileR, eval=FALSE}
+## JvH: I TEMPORARILY DISACTIVATE THIS SECTIO BECAUSE I HAVE NO INTERNET CONNECTION
+
 library(gProfileR)
 
 resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
@@ -921,8 +1138,7 @@ kable(term.induced[1:10,c("term.name",
 
 And now using the list of repressed genes. 
 
-```{r}
-
+```{r eval=FALSE}
 
 resultDESeq2.df <- na.omit(data.frame(resultDESeq2))
 repressed.sign <- rownames(resultDESeq2.df)[resultDESeq2.df$log2FoldChange <= -2 &  resultDESeq2.df$padj < alpha]

@@ -1,13 +1,9 @@
 ---
 title: "RNA-Seq - differential expression using DESeq2"
-author: "Nicolas Terrapon,  Denis Puthier and Jacques van Helden (adapted from tutorial from Hugo Varet, Julie Aubert and J. van Helden)"
+author: Nicolas Terrapon,  Denis Puthier and Jacques van Helden (adapted from tutorial
+  from Hugo Varet, Julie Aubert and J. van Helden)
 date: 'First version: 2016-12-10; Last update: `r Sys.Date()`'
 output:
-  pdf_document:
-    fig_caption: yes
-    highlight: zenburn
-    toc: yes
-    toc_depth: 3
   html_document:
     fig_caption: yes
     highlight: zenburn
@@ -16,6 +12,18 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: no
+  beamer_presentation:
+    colortheme: dolphin
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    fonttheme: structurebold
+    highlight: tango
+    incremental: no
+    keep_tex: no
+    slide_level: 2
+    theme: Montpellier
+    toc: yes
   ioslides_presentation:
     colortheme: dolphin
     fig_caption: yes
@@ -30,18 +38,11 @@ output:
     theme: cerulean
     toc: yes
     widescreen: yes
-  beamer_presentation:
-    colortheme: dolphin
+  pdf_document:
     fig_caption: yes
-    fig_height: 4
-    fig_width: 6
-    fonttheme: structurebold
-    highlight: tango
-    incremental: no
-    keep_tex: no
-    slide_level: 2
-    theme: Montpellier
+    highlight: zenburn
     toc: yes
+    toc_depth: 3
   slidy_presentation:
     fig_caption: yes
     fig_height: 4
@@ -279,7 +280,7 @@ table(phenoTable)
 <a href="javascript:sizeTbl2('block','ex4')">View solution</a>|<a href="javascript:sizeTbl2('none','ex4')">Hide solution</a>
 <div id="ex4"  style="overflow:hidden;display:none">
 
-```{r reads_per_sample_barplot, fig.width=8, fig.height=12, fig.cap="**Million reads per sample**. "}
+```{r reads_per_sample_barplot, fig.width=7, fig.height=9, fig.cap="**Million reads per sample**. "}
 barplot(colSums(countTable)/1000000, 
         main="Total number of reads per sample (million)",
         col=phenoTable$color, 
@@ -401,7 +402,7 @@ kable(statsPerSample[sample(1:ncol(countTable), size = 10),])
 
 The summary only displays a few milestone values (mean, median, quartiles). In order to get a better intuition of the data, we can draw an histogram of all values.
 
-```{r data_distrib_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=12, fig.cap="Histogram of  counts per genes. **Top: raw counts. ** the scale is determined by the gene with the highest count, which is apparently an outlier.  **Middle: ** raw counts, with X axis truncated to 2000 in order to display a representative range despite outliers. **Bottom: ** log2-transformed counts (bottom) per gene, with a pseudocount of 1 to avoid minus infinitevalues resulting from zero counts. "}
+```{r data_distrib_histogram, fig.path="figures/schurch2016_", fig.width=7, fig.height=9, fig.cap="Histogram of  counts per genes. **Top: raw counts. ** the scale is determined by the gene with the highest count, which is apparently an outlier.  **Middle: ** raw counts, with X axis truncated to 2000 in order to display a representative range despite outliers. **Bottom: ** log2-transformed counts (bottom) per gene, with a pseudocount of 1 to avoid minus infinitevalues resulting from zero counts. "}
 
 par(mfrow=c(3,1))
 
@@ -430,7 +431,7 @@ par(mfrow=c(1,1))
 
 To get better insights into the distribution per sample, the *boxplot* offer a good perspective.
 
-```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=10, fig.cap="Box plots of non-normalized log2(counts+1) per sample. "}
+```{r log2_counts_boxplots, fig.path="figures/schurch2016_", fig.width=7, fig.height=9, fig.cap="Box plots of non-normalized log2(counts+1) per sample. "}
 boxplot(log2(countTable + epsilon), col=phenoTable$color, pch=".", 
         horizontal=TRUE, cex.axis=0.5,
         las=1, ylab="Samples", xlab="log2(counts +1)")
@@ -750,7 +751,7 @@ We show below some examples of this distribution.
 **Particular case**: when $n=1$ the negative binomial corresponds to the the **geometric distribution**, which  models the probability distribution to observe the first success after $x$ failures: $P_{NegBin}(x; 1, p) = P_{geom}(x; p) = p \cdot (1-p)^x$.
 
 
-```{r begbin_distrib, fig.path="figures/schurch2016_", fig.width=7, fig.height=12, fig.cap="**Negative binomial density. ** Blue bars: negative binomial density, i.e.  probability to obsere exactly $x$ failures before the $n^{th}$ success. The green vertical bar denotes the expected value (mean). Brown lines: Poisson density with the same expected value. Horizontal arrows indicate a 1 standard deviation range around the means, for the negative binomial (blue) and Poisson (red) distributins, respectively. "}
+```{r begbin_distrib, fig.path="figures/schurch2016_", fig.width=7, fig.height=9, fig.cap="**Negative binomial density. ** Blue bars: negative binomial density, i.e.  probability to obsere exactly $x$ failures before the $n^{th}$ success. The green vertical bar denotes the expected value (mean). Brown lines: Poisson density with the same expected value. Horizontal arrows indicate a 1 standard deviation range around the means, for the negative binomial (blue) and Poisson (red) distributins, respectively. "}
 par(mfrow=c(3,2))
 
 # Some intuition about the negative binomiale parametrized using n and p.
@@ -944,7 +945,7 @@ Here we analyzed `r nrow(resultDESeq2)` genes, and tested the null hypothesis fo
 ## Volcano plot
 
 
-```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=10, fig.height=5, fig.cap="**Volcano plot of DESeq2 results. ** Abcsissa: effect size, estimated a the log2(fold-change) between Snf2 and WT mutant. Ordinate: significance ($-log_{10}(adjusted P-value)$). "}
+```{r DESeq2_volcano_plot, fig.path="figures/schurch2016_", fig.width=10, fig.height=7, fig.cap="**Volcano plot of DESeq2 results. ** Abcsissa: effect size, estimated a the log2(fold-change) between Snf2 and WT mutant. Ordinate: significance ($-log_{10}(adjusted P-value)$). "}
 
 alpha <- 0.01 # Threshold on the p-value
 
@@ -982,7 +983,7 @@ abline(h=-log10(alpha), col="brown")
 gn.selected <- abs(resultDESeq2$log2FoldChange) > 2 & resultDESeq2$padj < alpha 
 text(resultDESeq2$log2FoldChange[gn.selected],
      -log10(resultDESeq2$padj)[gn.selected],
-     lab=rownames(resultDESeq2)[gn.selected ], cex=0.4)
+     lab=rownames(resultDESeq2)[gn.selected ], cex=0.6)
 
 # par(mfrow=c(1,1))
 
@@ -1017,7 +1018,7 @@ The **significance** is the minus log10 of the p-value.
 
 It may be important to check the validity of our analysis by simply assessing the expression level of the most highly differential gene.
 
-```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=8, fig.cap="Barplot of the counts per sample for a few selected genes. **Top:** highly significant gene with an important fold change. **Middle:** very significant gene with a relatively low fold change. **Bottom:** non-significant gene.  "}
+```{r selected_gene_barplot, fig.path="figures/schurch2016_", fig.width=8, fig.height=8, fig.cap="Barplots of counts per sample for a few selected genes. **Top:** highly significant gene with an important fold change. **Middle:** very significant gene with a relatively low fold change. **Bottom:** non-significant gene.  "}
 
 selectedGenes <- c(
   "Most significant" =  rownames(resultDESeq2)[which.max(resultDESeq2$sig)])
